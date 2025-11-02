@@ -102,7 +102,14 @@ class FlashCrashData:
 class LatencyArbitrageDetector:
     """Advanced Latency Arbitrage Detector"""
     
-    def __init__(self):
+    def __init__(self, test_symbol: str = 'BTC/USDT'):
+        """Initialize Latency Arbitrage Detector
+
+        Args:
+            test_symbol: Symbol to use for latency testing (default: 'BTC/USDT')
+                        BTC/USDT is recommended as it has the highest liquidity
+                        and is available on all major exchanges.
+        """
         self.logger = unified_logging
         self.latency_history = {}
         self.price_feeds = {}
@@ -110,7 +117,10 @@ class LatencyArbitrageDetector:
         self.triangular_opportunities = []
         self.statistical_opportunities = []
         self.flash_crash_history = []
-        
+
+        # FIXED: Configurable test symbol instead of hardcoded
+        self.test_symbol = test_symbol
+
         # Exchange latency targets (ms)
         self.latency_targets = {
             'binance': 50,
@@ -125,8 +135,8 @@ class LatencyArbitrageDetector:
             'bitstamp': 95,
             'mexc': 70
         }
-        
-        self.logger.info("✅ Latency Arbitrage Detector initialized - God Mode 10000")
+
+        self.logger.info(f"✅ Latency Arbitrage Detector initialized - God Mode 10000 (test symbol: {test_symbol})")
     
     def monitor_cross_exchange_latency(self, exchanges: List[str]) -> Dict[str, LatencyData]:
         """Monitor latency across exchanges"""
@@ -140,10 +150,10 @@ class LatencyArbitrageDetector:
                 try:
                     # Try to fetch real order book or ticker to measure actual latency
                     from .real_market_data_fetcher import real_market_data_fetcher
-                    test_symbol = 'BTC/USDT'
-                    
+
+                    # FIXED: Use configurable test symbol instead of hardcoded 'BTC/USDT'
                     # Actual API call to measure latency
-                    _ = real_market_data_fetcher.get_real_time_price(test_symbol, exchange)
+                    _ = real_market_data_fetcher.get_real_time_price(self.test_symbol, exchange)
                     actual_latency = (time.time() - start_time) * 1000  # Convert to ms
                     
                     # Calculate jitter from recent history

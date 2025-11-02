@@ -3227,25 +3227,30 @@ class GodMode10000Application:
             st.markdown("---")
             st.markdown("### 📈 Quick Charts")
             
-            # Get chart symbol: Use selected from sidebar, or default to BTC/USDT
+            # Get chart symbol: Use selected from sidebar, or use top coin by volume
             chart_symbols = st.session_state.get('selected_symbols', [])
             if not chart_symbols or len(chart_symbols) == 0:
-                chart_symbol = "BTC/USDT"  # Default to BTC/USDT
+                # FIXED: Use top coin by volume instead of hardcoded BTC/USDT
+                top_coins = st.session_state.get('top_coins', [])
+                chart_symbol = top_coins[0] if top_coins else "BTC/USDT"  # Ultimate fallback
             else:
                 chart_symbol = chart_symbols[0]
-            
+
+            # FIXED: Use global timeframe instead of hardcoded '1h'
+            global_timeframe = st.session_state.get('selected_timeframe', '1h')
+
             # Display quick chart for the symbol
             try:
                 col1, col2 = st.columns([3, 1])
-                
+
                 with col1:
-                    st.markdown(f"**{chart_symbol}** - 24h Price Chart")
-                    
-                    # Fetch quick chart data
+                    st.markdown(f"**{chart_symbol}** - {global_timeframe} Price Chart")
+
+                    # Fetch quick chart data using global timeframe
                     quick_data = real_market_data_fetcher.get_historical_data(
-                        chart_symbol, 
-                        timeframe='1h', 
-                        limit=24  # Last 24 hours
+                        chart_symbol,
+                        timeframe=global_timeframe,
+                        limit=24  # Last 24 data points
                     )
                     
                     if quick_data and len(quick_data) > 0:

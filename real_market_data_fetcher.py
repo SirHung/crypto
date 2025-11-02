@@ -810,6 +810,7 @@ class RealMarketDataFetcher:
             
             # ULTRA INTELLIGENT: Dynamic limit based on timeframe for maximum data quality
             # Increased base from 500 -> 2000 for better AI training and predictions
+            original_limit_requested = limit  # Store original for logging
             if limit == 2000:  # Only adjust if using default
                 timeframe_multipliers = {
                     '1m': 0.25,   # 500 candles (~8 hours) - optimized for scalping
@@ -822,6 +823,8 @@ class RealMarketDataFetcher:
                 }
                 multiplier = timeframe_multipliers.get(timeframe, 1.0)
                 limit = int(limit * multiplier)
+                if multiplier != 1.0:
+                    unified_logging.info(f"📊 Auto-adjusted limit for {timeframe}: {original_limit_requested} → {limit} (multiplier: {multiplier}x)")
             
             cache_key = f"historical_{symbol}_{timeframe}_{limit}"
             current_time = time.time()
@@ -834,7 +837,7 @@ class RealMarketDataFetcher:
             # ULTRA SMART: Split large requests to bypass API limits
             # If limit > 1000, split into multiple requests
             if limit > 1000:
-                return self._fetch_historical_data_chunked(symbol, timeframe, limit, cache_key, current_time)
+                return self._fetch_historical_data_chunked(symbol, timeframe, limit, cache_key, current_time, original_limit_requested)
             
             # Fetch from exchanges (single request for limit <= 1000)
             for exchange_name, exchange in self.exchanges.items():
@@ -865,7 +868,11 @@ class RealMarketDataFetcher:
                     if actual_count > 0:
                         first_timestamp = historical_data[0]['timestamp']
                         last_timestamp = historical_data[-1]['timestamp']
-                        unified_logging.info(f"✅ Fetched {actual_count} candles from {exchange_name} for {symbol} {timeframe} (requested: {limit}) - Range: {first_timestamp} to {last_timestamp}")
+                        # FIXED: Show original request vs actual fetched for transparency
+                        if original_limit_requested != limit:
+                            unified_logging.info(f"✅ Fetched {actual_count} candles from {exchange_name} for {symbol} {timeframe} (user requested: {original_limit_requested}, auto-adjusted: {limit}, actual: {actual_count}) - Range: {first_timestamp} to {last_timestamp}")
+                        else:
+                            unified_logging.info(f"✅ Fetched {actual_count} candles from {exchange_name} for {symbol} {timeframe} (requested: {limit}, actual: {actual_count}) - Range: {first_timestamp} to {last_timestamp}")
                     else:
                         unified_logging.warning(f"⚠️ No candles fetched from {exchange_name} for {symbol} {timeframe}")
 
@@ -881,7 +888,7 @@ class RealMarketDataFetcher:
             unified_logging.error(f"Failed to get historical data: {e}", exception=e)
             return []
     
-    def _fetch_historical_data_chunked(self, symbol: str, timeframe: str, total_limit: int, cache_key: str, current_time: float) -> List[Dict[str, Any]]:
+    def _fetch_historical_data_chunked(self, symbol: str, timeframe: str, total_limit: int, cache_key: str, current_time: float, original_limit: int = None) -> List[Dict[str, Any]]:
         """Fetch large amounts of historical data by splitting into chunks - PREVENT POOL EXHAUSTION"""
         try:
             # CRITICAL FIX: Ensure exchanges are initialized
@@ -982,18 +989,24 @@ class RealMarketDataFetcher:
                     if all_data:
                         # Sort by timestamp (oldest first)
                         all_data.sort(key=lambda x: x['timestamp'])
-                        
+
                         # Cache the data
                         self.data_cache[cache_key] = all_data
                         self.last_update[cache_key] = current_time
-                        
-                        # Log accurate data count (real fetched vs requested)
-                        requested_limit = total_limit
+
+                        # FIXED: Log accurate data count with transparency
                         actual_fetched = len(all_data)
-                        if actual_fetched < requested_limit:
-                            unified_logging.warning(f"⚠️ Data limit exceeded: Requested {requested_limit}, fetched {actual_fetched} for {symbol} from {exchange_name} (exchange limit)")
+                        if original_limit and original_limit != total_limit:
+                            # Show all three values: user requested, auto-adjusted, actual fetched
+                            unified_logging.info(f"✅ Chunked fetch complete for {symbol} {timeframe} from {exchange_name}: user requested: {original_limit}, auto-adjusted: {total_limit}, actual: {actual_fetched}")
+                            if actual_fetched < total_limit:
+                                unified_logging.warning(f"⚠️ Fetched less than adjusted limit due to exchange constraints")
                         else:
-                            unified_logging.info(f"✅ Fetched {actual_fetched} candles for {symbol} from {exchange_name}")
+                            # No auto-adjustment, show requested vs actual
+                            if actual_fetched < total_limit:
+                                unified_logging.warning(f"⚠️ Partial data: Requested {total_limit}, fetched {actual_fetched} for {symbol} from {exchange_name} (exchange limit)")
+                            else:
+                                unified_logging.info(f"✅ Fetched {actual_fetched} candles for {symbol} {timeframe} from {exchange_name}")
                         return all_data
                     
                 except Exception as e:
@@ -1416,17 +1429,25 @@ class RealMarketDataFetcher:
             except Exception:
                 return []
     
-    def get_exchange_netflow(self, symbol: str, hours: int = 24) -> Optional[Dict[str, Any]]:
+    def get_exchange_netflow(self, symbol: str, hours: int = 24, timeframe: str = '1h') -> Optional[Dict[str, Any]]:
         """Get exchange inflow/outflow data for whale detection - REAL data only"""
         try:
             # Try to get from CoinGlass or Glassnode APIs (if available)
             # For now, estimate from volume and price movement
-            
+
             # Get historical data for the period
             formatted_symbol = f"{symbol}/USDT" if '/' not in symbol else symbol
-            timeframe = '1h'
-            
-            market_data = self.get_historical_data(formatted_symbol, timeframe, hours)
+
+            # FIXED: Use dynamic timeframe instead of hardcoded '1h'
+            # Calculate appropriate limit based on hours and timeframe
+            timeframe_hours_map = {
+                '1m': 1/60, '5m': 5/60, '15m': 15/60, '30m': 0.5,
+                '1h': 1, '4h': 4, '1d': 24, '1w': 168
+            }
+            hours_per_candle = timeframe_hours_map.get(timeframe, 1)
+            limit = max(10, int(hours / hours_per_candle))
+
+            market_data = self.get_historical_data(formatted_symbol, timeframe, limit)
             
             if not market_data or len(market_data) < 2:
                 return None

@@ -84,27 +84,33 @@ class DynamicRiskAdjuster:
         
         self.logger.info("✅ Dynamic Risk Adjuster initialized")
     
-    def adjust_risk_parameters(self, symbol: str, portfolio_value: float, 
-                               current_positions: Dict) -> Optional[RiskParameters]:
+    def adjust_risk_parameters(self, symbol: str, portfolio_value: float,
+                               current_positions: Dict, timeframe: str = '1h') -> Optional[RiskParameters]:
         """
         Điều chỉnh risk parameters dựa trên market conditions
+
+        Args:
+            symbol: Trading symbol
+            portfolio_value: Current portfolio value
+            current_positions: Current open positions
+            timeframe: Timeframe for analysis (default: '1h')
         """
         try:
             # Update portfolio tracking
             self.current_portfolio_value = portfolio_value
             self.peak_portfolio_value = max(self.peak_portfolio_value, portfolio_value)
-            
-            # Calculate metrics
-            var_1day = self._calculate_real_time_var(symbol)
-            beta = self._calculate_portfolio_beta(symbol, current_positions)
+
+            # Calculate metrics - FIXED: Pass timeframe instead of hardcoding
+            var_1day = self._calculate_real_time_var(symbol, timeframe=timeframe)
+            beta = self._calculate_portfolio_beta(symbol, current_positions, timeframe=timeframe)
             corr_risk = self._calculate_correlation_risk(symbol, current_positions)
-            
+
             # Adjust position sizing
             position_multiplier = self._calculate_position_multiplier(var_1day, beta, corr_risk)
             max_position = self.base_max_position * position_multiplier
-            
+
             # Adjust stop loss / take profit
-            volatility = self._get_current_volatility(symbol)
+            volatility = self._get_current_volatility(symbol, timeframe=timeframe)
             stop_loss = self.base_stop_loss * (1.0 + volatility)
             take_profit = self.base_take_profit * (1.0 + volatility * 0.5)
             trailing_stop = stop_loss * 0.7
@@ -144,11 +150,12 @@ class DynamicRiskAdjuster:
             self.logger.error(f"Error adjusting risk parameters: {e}")
             return None
     
-    def _calculate_real_time_var(self, symbol: str, confidence: float = 0.95) -> float:
+    def _calculate_real_time_var(self, symbol: str, confidence: float = 0.95, timeframe: str = '1h') -> float:
         """Calculate Value at Risk real-time - Delegate to risk_management"""
         try:
             # Use centralized risk_management for VaR calculation
-            historical_data = real_market_data_fetcher.get_historical_data(symbol, timeframe='1h', limit=100)
+            # FIXED: Use dynamic timeframe instead of hardcoded '1h'
+            historical_data = real_market_data_fetcher.get_historical_data(symbol, timeframe=timeframe, limit=100)
             
             if not historical_data or len(historical_data) < 20:
                 return 0.02  # 2% default
@@ -165,14 +172,19 @@ class DynamicRiskAdjuster:
             self.logger.error(f"Error calculating VaR: {e}")
             return 0.02
     
-    def _calculate_portfolio_beta(self, symbol: str, positions: Dict) -> float:
-        """Calculate portfolio beta vs market (BTC) - Delegate to risk_management"""
+    def _calculate_portfolio_beta(self, symbol: str, positions: Dict, timeframe: str = '1d') -> float:
+        """Calculate portfolio beta vs market (BTC) - Delegate to risk_management
+
+        Note: Beta is typically calculated on daily timeframe for statistical significance,
+        but can be overridden for intraday analysis.
+        """
         try:
+            # FIXED: Use dynamic timeframe (default: '1d' for beta calculation best practice)
             # Get symbol returns
-            symbol_data = real_market_data_fetcher.get_historical_data(symbol, timeframe='1d', limit=30)
-            
+            symbol_data = real_market_data_fetcher.get_historical_data(symbol, timeframe=timeframe, limit=30)
+
             # Get BTC returns as market proxy
-            btc_data = real_market_data_fetcher.get_historical_data('BTC/USDT', timeframe='1d', limit=30)
+            btc_data = real_market_data_fetcher.get_historical_data('BTC/USDT', timeframe=timeframe, limit=30)
             
             if not symbol_data or not btc_data or len(symbol_data) < 20 or len(btc_data) < 20:
                 return 1.0
@@ -260,10 +272,16 @@ class DynamicRiskAdjuster:
             self.logger.error(f"Error calculating multiplier: {e}")
             return 1.0
     
-    def _get_current_volatility(self, symbol: str) -> float:
-        """Get current volatility"""
+    def _get_current_volatility(self, symbol: str, timeframe: str = '1h') -> float:
+        """Get current volatility
+
+        Args:
+            symbol: Trading symbol
+            timeframe: Timeframe for volatility calculation (default: '1h')
+        """
         try:
-            historical_data = real_market_data_fetcher.get_historical_data(symbol, timeframe='1h', limit=50)
+            # FIXED: Use dynamic timeframe instead of hardcoded '1h'
+            historical_data = real_market_data_fetcher.get_historical_data(symbol, timeframe=timeframe, limit=50)
             
             if not historical_data or len(historical_data) < 20:
                 return 0.5  # Default
