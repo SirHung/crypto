@@ -4783,8 +4783,24 @@ class GodMode10000Application:
                                     'timestamp': datetime.now()
                                 }
                             except Exception as e:
-                                st.error(f"❌ Prediction error: {e}")
-                                unified_logging.log_error(self.logger_module, f"❌ Prediction error for {symbol} @ {timeframe}: {e}", exception=e)
+                                error_msg = str(e)
+                                # IMPROVED: Check if error is due to missing trained models
+                                if "PREDICTION FAILED" in error_msg or "No trained AI models" in error_msg or "Train AI models" in error_msg:
+                                    st.error(f"❌ No trained AI models found for **{symbol} @ {timeframe}**")
+                                    st.warning("⚠️ **Required Action:**")
+                                    st.info("""
+                                    1. Go to **🤖 AI Intelligence** tab
+                                    2. Select **🧠 AI Training Engine**
+                                    3. Choose symbol: **{}**
+                                    4. Choose timeframe: **{}**
+                                    5. Click **🚀 Start Training**
+                                    6. Wait 2-5 minutes for training to complete
+                                    7. Return here and try prediction again
+                                    """.format(symbol, timeframe))
+                                    unified_logging.log_warning(self.logger_module, f"⚠️ Models not trained for {symbol} @ {timeframe}")
+                                else:
+                                    st.error(f"❌ Prediction error: {e}")
+                                    unified_logging.log_error(self.logger_module, f"❌ Prediction error for {symbol} @ {timeframe}: {e}", exception=e)
                                 prediction = None
                     else:
                         # Use cached prediction

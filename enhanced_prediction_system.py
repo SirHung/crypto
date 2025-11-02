@@ -2389,18 +2389,25 @@ class EnhancedPredictionSystem:
                 )
                 
                 if not models_ready:
-                    # Try loading trained models from disk for SPECIFIC symbol
-                    self.unified_logger.info(f"AI models not loaded, attempting to load from disk for {symbol}...")
+                    # Try loading trained models from disk for SPECIFIC symbol + timeframe
+                    self.unified_logger.info(f"🔍 AI models not loaded in memory, attempting to load from disk for {symbol} @ {timeframe}...")
                     loaded = ai_engine.load_trained_models(symbol)
-                    
+
                     if not loaded:
-                        self.unified_logger.error(f"❌ REQUIRED: Train AI models for {symbol} first")
-                        self.unified_logger.error(f"❌ Go to '🤖 AI Intelligence' → 'AI Training' → Select {symbol} → 'Start Training'")
-                        self.unified_logger.error(f"❌ Cannot provide AI predictions without trained models")
+                        # IMPROVED: Clear, actionable error message with symbol and timeframe
+                        self.unified_logger.error(f"❌ PREDICTION FAILED: No trained AI models found for {symbol} @ {timeframe}")
+                        self.unified_logger.error(f"❌ REQUIRED ACTION:")
+                        self.unified_logger.error(f"   1. Go to '🤖 AI Intelligence' tab")
+                        self.unified_logger.error(f"   2. Select '🧠 AI Training Engine' sub-tab")
+                        self.unified_logger.error(f"   3. Select symbol: {symbol}")
+                        self.unified_logger.error(f"   4. Select timeframe: {timeframe} (or use custom)")
+                        self.unified_logger.error(f"   5. Click '🚀 Start Training' and wait for completion")
+                        self.unified_logger.error(f"   6. Then return here to generate prediction")
+                        self.unified_logger.warning(f"⚠️  Note: Training typically takes 2-5 minutes depending on data size")
                         # Return None instead of fallback to force user to train models
                         return None
                     else:
-                        self.unified_logger.info(f"✅ Successfully auto-loaded trained models for {symbol}")
+                        self.unified_logger.info(f"✅ Successfully auto-loaded trained models for {symbol} @ {timeframe}")
             except Exception as e:
                 self.unified_logger.error(f"Failed to check/load AI models for {symbol}: {e}")
                 return None
