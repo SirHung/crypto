@@ -297,9 +297,11 @@ class MarketConstants:
                 return float(price)
         except Exception:
             pass
-        
-        # Final fallback to configured default
-        return float(_config.get('market.default_eth_price', 3000.0))
+
+        # STRICT: Return 0 if unable to get real price data
+        # Do NOT return fake/default values
+        unified_logging.warning("Unable to fetch ETH price from any source - returning 0")
+        return 0.0
     
     @classmethod
     def get_risk_free_rate(cls) -> float:
