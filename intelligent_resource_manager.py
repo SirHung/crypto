@@ -556,45 +556,49 @@ class IntelligentResourceManager:
             cpu_threads = self.system_info['cpu_threads']
             
             # Thread workers calculation (I/O bound tasks)
-            # Use up to 90% of CPU threads for maximum parallelism
-            if cpu_available > 80:  # System is idle
-                thread_workers = int(cpu_threads * 12)  # Hyper-aggressive
+            # BALANCED: Optimal range is 2-4x CPU threads for I/O-bound without excessive context switching
+            # RESEARCH: Beyond 4x threads, diminishing returns due to context switching overhead
+            if cpu_available > 80:  # System is idle - can use more workers
+                thread_workers = int(cpu_threads * 3.0)  # 3x CPU threads (optimal for I/O)
             elif cpu_available > 60:  # System has plenty of resources
-                thread_workers = int(cpu_threads * 8)
+                thread_workers = int(cpu_threads * 2.5)  # 2.5x threads (balanced)
             elif cpu_available > 40:  # System moderately loaded
-                thread_workers = int(cpu_threads * 4)
+                thread_workers = int(cpu_threads * 2.0)  # 2x threads (conservative)
             elif cpu_available > 20:  # System busy
-                thread_workers = int(cpu_threads * 2)
-            else:  # System very busy
-                thread_workers = max(cpu_threads, 4)
+                thread_workers = int(cpu_threads * 1.5)  # 1.5x threads (minimal overhead)
+            else:  # System very busy - match CPU threads
+                thread_workers = max(cpu_threads, 4)  # No multiplication, prevent thrashing
             
             # Process workers calculation (CPU bound tasks)
-            # More conservative for process workers
+            # CONSERVATIVE: Process workers have higher memory overhead (full memory duplication)
+            # Optimal is 1-1.5x CPU cores for most workloads
             if cpu_available > 80:
-                process_workers = int(cpu_cores * 2.5)  # Aggressive
+                process_workers = int(cpu_cores * 1.5)  # 1.5x cores (balanced for processes)
             elif cpu_available > 60:
-                process_workers = int(cpu_cores * 2.0)
+                process_workers = int(cpu_cores * 1.25)  # 1.25x cores
             elif cpu_available > 40:
-                process_workers = int(cpu_cores * 1.5)
+                process_workers = cpu_cores  # Match cores exactly
             elif cpu_available > 20:
-                process_workers = cpu_cores
+                process_workers = max(int(cpu_cores * 0.75), 1)  # 0.75x cores
             else:
-                process_workers = max(int(cpu_cores * 0.75), 1)
-            
+                process_workers = max(int(cpu_cores * 0.5), 1)  # 0.5x cores for busy system
+
             # GPU workers (if available)
             gpu_workers = 0
             if self.gpu_available:
                 avg_gpu_usage = sum(resources.gpu_percent) / len(resources.gpu_percent) if resources.gpu_percent else 0
                 gpu_available = 100 - avg_gpu_usage
-                
+
+                # OPTIMIZED: GPU batch size calculation (not worker count)
+                # For GPU, we care about batch size not parallel workers
                 if gpu_available > 80:
-                    gpu_workers = self.gpu_count * 4  # Hyper-aggressive
+                    gpu_workers = self.gpu_count * 2  # 2x GPU count (reasonable)
                 elif gpu_available > 60:
-                    gpu_workers = self.gpu_count * 3
+                    gpu_workers = int(self.gpu_count * 1.5)  # 1.5x
                 elif gpu_available > 40:
-                    gpu_workers = self.gpu_count * 2
+                    gpu_workers = self.gpu_count  # Match GPU count
                 else:
-                    gpu_workers = self.gpu_count
+                    gpu_workers = max(int(self.gpu_count * 0.5), 1)  # Conservative
             
             # Adjust based on available RAM (1GB per worker minimum)
             max_workers_by_ram = int(ram_available_gb * 0.8)  # Use 80% of available RAM

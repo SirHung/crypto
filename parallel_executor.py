@@ -55,84 +55,104 @@ class ParallelExecutor:
     def __init__(self):
         """Initialize Parallel Executor with INTELLIGENT resource management"""
         self.logger = unified_logging.get_logger("parallel_executor") if hasattr(unified_logging, 'get_logger') else unified_logging
-        
+
         # System capabilities
         self.cpu_count = multiprocessing.cpu_count()
         self.cpu_physical = psutil.cpu_count(logical=False) or (self.cpu_count // 2)
         self.ram_total_gb = psutil.virtual_memory().total / (1024**3)
-        
+
+        # REVOLUTIONARY: Integrate with intelligent_resource_manager for unified resource calculation
+        # This ensures ALL modules use consistent resource limits
+        self.resource_manager = None
+        try:
+            from .intelligent_resource_manager import intelligent_resource_manager
+            self.resource_manager = intelligent_resource_manager
+            self.logger.info("✅ Integrated with Intelligent Resource Manager for dynamic worker calculation")
+        except ImportError:
+            self.logger.warning("⚠️ Intelligent Resource Manager not available, using fallback calculation")
+
         # ULTRA OPTIMIZED worker calculation for maximum performance with stability
-        # CRITICAL FIX: Balance parallelism vs context switching overhead
-        # 
-        # RESEARCH: Optimal thread count for I/O-bound tasks = 2-4x CPU cores
-        #           For CPU-bound tasks = 1-1.5x CPU cores
-        #           Mixed workload = 1.5-2x CPU cores
-        # 
-        # GOD MODE 10000: Intelligent adaptive worker count
-        if unified_config:
-            base_workers = unified_config.get('performance.max_workers', 18)  # Further reduced for optimal performance
-            multiplier = unified_config.get('performance.worker_multiplier', 1.5)  # 1.5x for optimal balance
+        # CRITICAL FIX: Use intelligent_resource_manager if available, otherwise fallback
+        if self.resource_manager:
+            # Use intelligent calculation from resource manager
+            optimal = self.resource_manager.calculate_optimal_workers()
+            # Extract values with safety checks
+            self.max_thread_workers = optimal.get('thread_workers', 18)
+            self.max_process_workers = optimal.get('process_workers', 2)
+            self.logger.info(f"📊 Using Intelligent Resource Manager: {self.max_thread_workers} threads, {self.max_process_workers} processes")
         else:
-            base_workers = 18  # Optimal for most systems (12-core = 18 workers)
-            multiplier = 1.5  # Proven optimal multiplier for mixed workload
-        
-        # REALISTIC: Use 60% of RAM to leave room for OS and other processes
-        # Each worker needs ~50MB RAM for most tasks, ~100MB for training
-        max_workers_by_ram = int((self.ram_total_gb * 0.60 * 1024) / 50)
-        
-        # ADAPTIVE: CPU multiplier based on current system load
-        # CRITICAL: Reduce workers more aggressively when system is under load
-        current_cpu_usage = psutil.cpu_percent(interval=0.05)
-        if current_cpu_usage > 90:  # Critical CPU load
-            cpu_multiplier = 1.0  # Match CPU cores exactly (no overhead)
-        elif current_cpu_usage > 75:  # High CPU load
-            cpu_multiplier = 1.25  # Minimal overhead (1.25x cores)
-        elif current_cpu_usage > 50:  # Medium CPU load
-            cpu_multiplier = 1.5  # Moderate (1.5x cores - optimal for mixed workload)
-        else:  # Low CPU load - can use slightly more
-            cpu_multiplier = min(multiplier, 2.0)  # Cap at 2x to prevent thrashing
-        
-        # REALISTIC Formula: Optimal worker count to minimize context switching
-        calculated_workers = min(
-            base_workers,
-            int(self.cpu_count * cpu_multiplier),
-            max_workers_by_ram
-        )
-        
-        # FINAL LIMIT: Cap at 2x CPU cores (optimal for mixed CPU/IO workload)
-        # For 12-core system: max 24 workers (reduced from 30)
-        # This prevents excessive context switching which causes the slowdown
-        realistic_max = min(
-            calculated_workers,
-            int(self.cpu_count * 2.0)  # Max 2x CPU cores (proven optimal)
-        )
-        self.max_thread_workers = max(4, realistic_max)  # Min 4 for small systems
-        
-        # Process workers = 50% of physical cores (further reduced for optimal stability)
-        # CRITICAL: Process workers have higher overhead than thread workers
-        # Each process duplicates memory, so we need to be more conservative
-        self.max_process_workers = max(1, int(self.cpu_physical * 0.5))
-        
+            # Fallback: Intelligent calculation without resource manager
+            # RESEARCH: Optimal thread count for I/O-bound tasks = 2-4x CPU cores
+            #           For CPU-bound tasks = 1-1.5x CPU cores
+            #           Mixed workload = 1.5-2x CPU cores
+            if unified_config:
+                # Use config if available (but no hardcoded defaults in code)
+                base_workers = unified_config.get('performance.max_workers', None)
+                multiplier = unified_config.get('performance.worker_multiplier', 1.5)
+            else:
+                base_workers = None
+                multiplier = 1.5
+
+            # REALISTIC: Use 60% of RAM to leave room for OS and other processes
+            # Each worker needs ~50MB RAM for most tasks, ~100MB for training
+            max_workers_by_ram = int((self.ram_total_gb * 0.60 * 1024) / 50)
+
+            # ADAPTIVE: CPU multiplier based on current system load
+            current_cpu_usage = psutil.cpu_percent(interval=0.05)
+            if current_cpu_usage > 90:  # Critical CPU load
+                cpu_multiplier = 1.0  # Match CPU cores exactly (no overhead)
+            elif current_cpu_usage > 75:  # High CPU load
+                cpu_multiplier = 1.25  # Minimal overhead
+            elif current_cpu_usage > 50:  # Medium CPU load
+                cpu_multiplier = 1.5  # Moderate (optimal for mixed workload)
+            else:  # Low CPU load
+                cpu_multiplier = min(multiplier, 2.0)  # Cap at 2x to prevent thrashing
+
+            # REALISTIC Formula: Optimal worker count to minimize context switching
+            if base_workers:
+                calculated_workers = min(
+                    base_workers,
+                    int(self.cpu_count * cpu_multiplier),
+                    max_workers_by_ram
+                )
+            else:
+                # DYNAMIC: No hardcoded base, pure calculation from system resources
+                calculated_workers = min(
+                    int(self.cpu_count * cpu_multiplier),
+                    max_workers_by_ram
+                )
+
+            # FINAL LIMIT: Cap at 2x CPU cores (optimal for mixed CPU/IO workload)
+            realistic_max = min(
+                calculated_workers,
+                int(self.cpu_count * 2.0)  # Max 2x CPU cores (proven optimal)
+            )
+            self.max_thread_workers = max(4, realistic_max)  # Min 4 for small systems
+
+            # Process workers = 50% of physical cores
+            self.max_process_workers = max(1, int(self.cpu_physical * 0.5))
+
+            self.logger.info(f"📊 Using fallback calculation: {self.max_thread_workers} threads, {self.max_process_workers} processes")
+
         # ULTRA INTELLIGENT: Dynamic GPU batch size based on VRAM
         self.gpu_batch_size = self._calculate_optimal_gpu_batch_size()
-        
+
         # REVOLUTIONARY: Persistent executor pool with intelligent lifecycle management
         self._thread_executor_pool = None
         self._executor_last_used = time.time()
         self._executor_creation_time = None
         # ULTRA INTELLIGENT: Long-running training sessions need stable executor
-        # But also need periodic refresh to prevent memory leaks
-        self._executor_timeout = 3600  # Idle timeout: 1 hour (cleanup if unused)
-        self._executor_max_lifetime = 14400  # Max lifetime: 4 hours (force refresh to prevent leaks)
-        self._executor_task_count = 0  # Track tasks for health monitoring
-        
+        self._executor_timeout = 3600  # Idle timeout: 1 hour
+        self._executor_max_lifetime = 14400  # Max lifetime: 4 hours
+        self._executor_task_count = 0
+
         # Monitoring metrics
         self.total_tasks_executed = 0
         self.total_execution_time = 0.0
         self.last_health_check = time.time()
-        
+
         self.logger.info(
-            f"✅ Parallel Executor initialized with ULTRA INTELLIGENT settings: "
+            f"✅ Parallel Executor initialized: "
             f"{self.max_thread_workers} thread workers (CPU: {self.cpu_count}, RAM: {self.ram_total_gb:.1f}GB), "
             f"{self.max_process_workers} process workers, GPU batch: {self.gpu_batch_size}"
         )
