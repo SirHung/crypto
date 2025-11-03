@@ -51,21 +51,12 @@ class TraderProfile:
 
 
 @dataclass
-class TradingSignal:
-    """Trading signal from a trader"""
-    signal_id: str
-    trader_id: str
-    symbol: str
-    action: str  # BUY, SELL, CLOSE
-    entry_price: float
-    stop_loss: float
-    take_profit: float
-    position_size: float
-    confidence: float
-    timestamp: datetime
-    reasoning: str
-    status: str = "ACTIVE"  # ACTIVE, CLOSED, CANCELLED
+# CONSOLIDATED: Import TradingSignal from unified_data_structures
+# Using unified version for consistency across all modules
+from .unified_data_structures import TradingSignal as UnifiedTradingSignal
 
+# Alias for backward compatibility in this module
+TradingSignal = UnifiedTradingSignal
 
 @dataclass
 class CopyTradingConfig:

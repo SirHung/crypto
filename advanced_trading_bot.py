@@ -83,18 +83,9 @@ class BotStatus(Enum):
     STOPPED = "stopped"
     ERROR = "error"
 
-@dataclass
-class TradingSignal:
-    """Trading signal structure"""
-    symbol: str
-    action: str  # 'BUY', 'SELL', 'HOLD'
-    confidence: float
-    price_target: float
-    stop_loss: float
-    take_profit: float
-    reasoning: str
-    timestamp: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+# CONSOLIDATED: Import TradingSignal from unified_data_structures instead of duplicate
+# The unified version is more comprehensive with additional fields
+from .unified_data_structures import TradingSignal, Order, Position
 
 @dataclass
 class BotConfig:
