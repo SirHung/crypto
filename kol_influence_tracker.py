@@ -192,10 +192,11 @@ class KOLInfluenceTracker:
             
             # Initialize with well-known crypto KOLs
             self._initialize_known_kols()
-            
-            # Add realistic sample data for demo
-            self._add_sample_activity_data()
-            
+
+            # REMOVED: Demo/sample data - ONLY use real data from Twitter API
+            # System will start with empty posts and fetch real data via monitor_kol_activity()
+            # or add_kol_post() when real social media data is available
+
             # Monitoring settings
             self.monitoring_active = False
             self.check_interval = 300  # Check every 5 minutes
@@ -315,150 +316,10 @@ class KOLInfluenceTracker:
             
         except Exception as e:
             self.unified_logger.error(f"Failed to initialize known KOLs: {e}")
-    
-    def _add_sample_activity_data(self):
-        """Add realistic sample KOL activity data for demonstration"""
-        try:
-            from datetime import timedelta
-            
-            # Sample posts for each KOL
-            sample_posts = [
-                {
-                    'kol_id': 'kol_1',  # Michael Saylor
-                    'content': '📊 Bitcoin continues to demonstrate its value as digital gold. $BTC is the ultimate store of value for institutions.',
-                    'coins': ['BTC'],
-                    'sentiment': 'BULLISH'
-                },
-                {
-                    'kol_id': 'kol_2',  # Vitalik Buterin
-                    'content': 'Ethereum Layer 2 solutions are scaling beautifully. $ETH ecosystem growth is impressive. Future looks bright.',
-                    'coins': ['ETH'],
-                    'sentiment': 'BULLISH'
-                },
-                {
-                    'kol_id': 'kol_3',  # CZ
-                    'content': '$BNB utility continues to expand. New use cases emerging across the ecosystem. Building for the future.',
-                    'coins': ['BNB'],
-                    'sentiment': 'BULLISH'
-                },
-                {
-                    'kol_id': 'kol_4',  # Cathie Wood
-                    'content': 'Bitcoin adoption by institutions accelerating. $BTC price target remains $1M+ by 2030. Strong conviction.',
-                    'coins': ['BTC'],
-                    'sentiment': 'BULLISH'
-                },
-                {
-                    'kol_id': 'kol_5',  # PlanB
-                    'content': 'Stock-to-Flow model projections holding strong. $BTC bull run confirmed. On-chain metrics bullish.',
-                    'coins': ['BTC'],
-                    'sentiment': 'BULLISH'
-                },
-                {
-                    'kol_id': 'kol_2',  # Vitalik
-                    'content': 'Layer 2 scaling reaching new heights. $ETH, $MATIC, and rollups showing great progress.',
-                    'coins': ['ETH', 'MATIC'],
-                    'sentiment': 'BULLISH'
-                },
-                {
-                    'kol_id': 'kol_3',  # CZ
-                    'content': 'DeFi innovation continues. Watching $SOL and $AVAX developments closely. Exciting times.',
-                    'coins': ['SOL', 'AVAX'],
-                    'sentiment': 'BULLISH'
-                }
-            ]
-            
-            # Add posts with recent timestamps
-            now = datetime.now(timezone.utc)
-            for i, post_data in enumerate(sample_posts):
-                post = KOLPost(
-                    post_id=f"post_{i+1}",
-                    kol_id=post_data['kol_id'],
-                    platform=KOLPlatform.TWITTER,
-                    content=post_data['content'],
-                    mentioned_coins=post_data['coins'],
-                    sentiment=post_data['sentiment'],
-                    sentiment_score=0.8 if post_data['sentiment'] == 'BULLISH' else 0.2,
-                    # Confidence based on post index (deterministic, varies 0.65-0.85)
-                    confidence=0.65 + (i % 20) * 0.01,
-                    engagement={
-                        # Engagement based on KOL reputation (deterministic)
-                        'likes': 10000 + (i * 4500),  # Varies 10k-100k
-                        'retweets': 5000 + (i * 2250),  # Varies 5k-50k
-                        'comments': 1000 + (i * 450)    # Varies 1k-10k
-                    },
-                    # Timestamp varies based on post index (deterministic)
-                    timestamp=now - timedelta(hours=1 + (i * 2.35)),  # Varies 1-48h
-                    post_url=f"https://twitter.com/kol/status/{i+1}"
-                )
-                self.kol_posts.append(post)
-            
-            # Add sample predictions with outcomes
-            predictions = [
-                {
-                    'kol_id': 'kol_1',
-                    'coin': 'BTC',
-                    'target_price': 100000,
-                    'outcome': 'SUCCESS'
-                },
-                {
-                    'kol_id': 'kol_4',
-                    'coin': 'BTC',
-                    'target_price': 75000,
-                    'outcome': 'SUCCESS'
-                },
-                {
-                    'kol_id': 'kol_5',
-                    'coin': 'BTC',
-                    'target_price': 80000,
-                    'outcome': 'SUCCESS'
-                },
-                {
-                    'kol_id': 'kol_2',
-                    'coin': 'ETH',
-                    'target_price': 5000,
-                    'outcome': 'SUCCESS'
-                },
-                {
-                    'kol_id': 'kol_3',
-                    'coin': 'BNB',
-                    'target_price': 600,
-                    'outcome': 'FAILED'
-                }
-            ]
-            
-            for i, pred_data in enumerate(predictions):
-                # Get KOL profile for confidence calculation
-                kol_profile = self.kol_profiles.get(pred_data['kol_id'])
-                base_confidence = 0.75 if kol_profile and kol_profile.verified else 0.60
-                
-                prediction = KOLPrediction(
-                    prediction_id=f"pred_{i+1}",
-                    kol_id=pred_data['kol_id'],
-                    coin=pred_data['coin'],
-                    prediction_type='PRICE_TARGET',
-                    prediction_details=f"Targeting ${pred_data['target_price']} within 3 months",
-                    target_price=pred_data['target_price'],
-                    timeframe='3M',
-                    # Calculate confidence based on KOL verification and historical accuracy
-                    confidence=min(0.95, base_confidence + (i % 5) * 0.03),
-                    # Prediction timestamp varies deterministically (30-90 days)
-                    timestamp=now - timedelta(days=30 + (i * 12)),
-                    outcome=pred_data['outcome']
-                )
-                self.kol_predictions.append(prediction)
-                
-                # Update KOL stats
-                self.update_prediction_outcome(
-                    prediction.prediction_id,
-                    pred_data['outcome'],
-                    {'price_reached': pred_data['outcome'] == 'SUCCESS'}
-                )
-            
-            self.unified_logger.info(f"Added {len(sample_posts)} sample posts and {len(predictions)} predictions")
-            
-        except Exception as e:
-            self.unified_logger.error(f"Failed to add sample activity data: {e}")
-    
+    # DELETED: _add_sample_activity_data() - DEMO/FAKE DATA REMOVED
+    # System now requires REAL data from Twitter API or other social media sources
+    # Use monitor_kol_activity() or add_kol_post() with actual API data only
+
     def add_kol_profile(self, profile: KOLProfile) -> bool:
         """Add new KOL profile to tracking"""
         try:
