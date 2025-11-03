@@ -67,11 +67,32 @@ class RealMarketDataFetcher:
             self._markets_cache_time = 0
             self._markets_cache_ttl = 3600  # 1 hour
             
-            # Highly optimized thread pool executor
+            # REVOLUTIONARY: Dynamic thread pool using intelligent resource management
             # Maximize parallel processing for multiple exchanges
             import os
             cpu_count = os.cpu_count() or 4
-            max_workers = min(64, cpu_count * 8)  # Aggressive parallelization
+
+            # OPTIMIZED: Get optimal workers from parallel_executor if available
+            try:
+                from .parallel_executor import parallel_executor
+                # Use thread workers for I/O-bound exchange API calls
+                max_workers = parallel_executor.get_optimal_workers('io')
+                unified_logging.info(f"📊 Using parallel_executor optimal workers: {max_workers}")
+            except ImportError:
+                # Fallback: Dynamic calculation based on CPU and system load
+                # For I/O-bound tasks (API calls), can use more workers than CPU count
+                current_cpu = psutil.cpu_percent(interval=0.1)
+                if current_cpu < 50:
+                    # System idle: aggressive parallelization for fast data fetching
+                    max_workers = min(cpu_count * 8, 96)  # Cap at 96 to prevent system overload
+                elif current_cpu < 75:
+                    # System moderately busy
+                    max_workers = min(cpu_count * 4, 64)
+                else:
+                    # System busy: conservative
+                    max_workers = min(cpu_count * 2, 32)
+                unified_logging.info(f"📊 Using fallback worker calculation: {max_workers} (CPU: {current_cpu:.1f}%)")
+
             self._executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="market_fetcher_optimized")
             
             # Async session for HTTP requests
@@ -778,10 +799,22 @@ class RealMarketDataFetcher:
     
 
     def _ensure_executor(self):
-        """Ensure executor is available"""
+        """Ensure executor is available - DYNAMIC worker allocation"""
         if not hasattr(self, '_executor') or self._executor is None:
-            # Optimized for God Mode 1000 - increased workers for better performance
-            self._executor = ThreadPoolExecutor(max_workers=12, thread_name_prefix="market_fetcher")
+            # DYNAMIC: Get optimal workers from parallel_executor
+            try:
+                from .parallel_executor import parallel_executor
+                max_workers = parallel_executor.get_optimal_workers('io')
+            except ImportError:
+                # Fallback: Use CPU count for I/O-bound tasks
+                import os, psutil
+                cpu_count = os.cpu_count() or 4
+                current_cpu = psutil.cpu_percent(interval=0.05)
+                if current_cpu < 50:
+                    max_workers = min(cpu_count * 3, 48)  # Aggressive when idle
+                else:
+                    max_workers = min(cpu_count * 2, 24)  # Conservative when busy
+            self._executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="market_fetcher")
 
     def shutdown(self, wait: bool = True):
         """Shutdown the internal executor if present."""
@@ -1528,10 +1561,11 @@ class RealMarketDataFetcherLazy:
             with self._lock:
                 if self._instance is None:
                     self._instance = RealMarketDataFetcher()
-                    # Ensure executor is initialized
+                    # Ensure executor is initialized with DYNAMIC workers
                     if not hasattr(self._instance, '_executor') or self._instance._executor is None:
                         from concurrent.futures import ThreadPoolExecutor
-                        self._instance._executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="market_fetcher")
+                        # DYNAMIC: Use _ensure_executor method for consistent worker calculation
+                        self._instance._ensure_executor()
         return self._instance
 
     def __getattr__(self, name):
