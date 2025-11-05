@@ -8,6 +8,7 @@ import sys
 import os
 import traceback
 from datetime import datetime
+import importlib
 
 # Add parent directory to path to allow package imports
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -81,16 +82,13 @@ def test_custom_modules():
 
     for module_name in modules_to_test:
         try:
-            # Try importing as crypto.module_name first
+            # Use importlib.import_module for proper module loading
             try:
-                module = __import__(f'crypto.{module_name}', fromlist=[module_name])
-            except (ImportError, ModuleNotFoundError) as e1:
-                # Fallback to direct import
-                try:
-                    module = __import__(module_name)
-                except Exception as e2:
-                    # If both fail, raise the second error
-                    raise e2 from e1
+                module = importlib.import_module(f'crypto.{module_name}')
+            except (ImportError, ModuleNotFoundError):
+                # Fallback to direct import (for standalone modules)
+                module = importlib.import_module(module_name)
+
             print_test(f"Module: {module_name}", "PASS", f"Loaded successfully")
             test_results['passed'].append(f"Module: {module_name}")
         except Exception as e:
@@ -104,10 +102,13 @@ def test_resource_manager():
     print_header("TEST 3: RESOURCE MANAGEMENT")
 
     try:
+        # Use importlib for consistent imports
         try:
-            from crypto.intelligent_resource_manager import intelligent_resource_manager
-        except ImportError:
-            from intelligent_resource_manager import intelligent_resource_manager
+            module = importlib.import_module('crypto.intelligent_resource_manager')
+            intelligent_resource_manager = module.intelligent_resource_manager
+        except (ImportError, AttributeError):
+            module = importlib.import_module('intelligent_resource_manager')
+            intelligent_resource_manager = module.intelligent_resource_manager
 
         # Test system info
         resources = intelligent_resource_manager.get_current_resources()
@@ -130,10 +131,13 @@ def test_parallel_executor():
     print_header("TEST 4: PARALLEL EXECUTOR")
 
     try:
+        # Use importlib for consistent imports
         try:
-            from crypto.parallel_executor import parallel_executor
-        except ImportError:
-            from parallel_executor import parallel_executor
+            module = importlib.import_module('crypto.parallel_executor')
+            parallel_executor = module.parallel_executor
+        except (ImportError, AttributeError):
+            module = importlib.import_module('parallel_executor')
+            parallel_executor = module.parallel_executor
 
         # Test system info
         info = parallel_executor.get_system_info()
@@ -163,10 +167,13 @@ def test_data_fetcher():
     print_header("TEST 5: REAL MARKET DATA FETCHER")
 
     try:
+        # Use importlib for consistent imports
         try:
-            from crypto.real_market_data_fetcher import real_market_data_fetcher
-        except ImportError:
-            from real_market_data_fetcher import real_market_data_fetcher
+            module = importlib.import_module('crypto.real_market_data_fetcher')
+            real_market_data_fetcher = module.real_market_data_fetcher
+        except (ImportError, AttributeError):
+            module = importlib.import_module('real_market_data_fetcher')
+            real_market_data_fetcher = module.real_market_data_fetcher
 
         # Test get market data
         print("   Testing BTC/USDT data fetch...")
@@ -200,12 +207,16 @@ def test_technical_indicators():
     print_header("TEST 6: TECHNICAL INDICATORS")
 
     try:
-        try:
-            from crypto.unified_technical_indicators import unified_technical_indicators
-        except ImportError:
-            from unified_technical_indicators import unified_technical_indicators
         import pandas as pd
         import numpy as np
+
+        # Use importlib for consistent imports
+        try:
+            module = importlib.import_module('crypto.unified_technical_indicators')
+            unified_technical_indicators = module.unified_technical_indicators
+        except (ImportError, AttributeError):
+            module = importlib.import_module('unified_technical_indicators')
+            unified_technical_indicators = module.unified_technical_indicators
 
         # Create sample OHLCV data
         sample_data = pd.DataFrame({
@@ -242,10 +253,13 @@ def test_market_constants():
     print_header("TEST 7: MARKET CONSTANTS")
 
     try:
+        # Use importlib for consistent imports
         try:
-            from crypto.market_constants import MarketConstants
-        except ImportError:
-            from market_constants import MarketConstants
+            module = importlib.import_module('crypto.market_constants')
+            MarketConstants = module.MarketConstants
+        except (ImportError, AttributeError):
+            module = importlib.import_module('market_constants')
+            MarketConstants = module.MarketConstants
 
         # Test BTC price fetch
         btc_price = MarketConstants.get_btc_price()

@@ -20,6 +20,8 @@ from . import python313_compatibility
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
 import numpy as np
+import logging  # FIXED: Import logging BEFORE using it
+import time
 
 # Import talib with error handling
 try:
@@ -32,8 +34,6 @@ except Exception:
     unified_logger = logging.getLogger(__name__)
     unified_logger.critical("CRITICAL: TA-Lib not available. Install with: pip install TA-Lib")
     talib = None
-import time
-import logging
 import hashlib
 from typing import Dict, List, Any, Optional, Tuple, Union
 from dataclasses import dataclass
