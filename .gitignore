@@ -72,8 +72,8 @@ Thumbs.db
 # *.pth
 # models/*.pkl
 
-# Data files (optional - uncomment if data files are large)
-# data/
+# Data files (user data, encrypted databases, runtime data)
+data/
 # *.csv
 # *.json
 
