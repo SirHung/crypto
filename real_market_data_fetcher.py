@@ -914,7 +914,16 @@ class RealMarketDataFetcher:
                 except Exception as e:
                     unified_logging.warning(f"Failed to fetch historical data from {exchange_name}: {e}")
                     continue
-            
+
+            # UPGRADE: Try fallback using yfinance for historical data
+            unified_logging.info(f"Primary exchanges unavailable for {symbol} historical data, trying yfinance fallback...")
+            fallback_data = self._fetch_historical_from_yfinance(symbol, timeframe, limit)
+            if fallback_data and len(fallback_data) > 0:
+                # Cache the fallback data
+                self.data_cache[cache_key] = fallback_data
+                self.last_update[cache_key] = current_time
+                return fallback_data
+
             return []
             
         except Exception as e:
@@ -1136,8 +1145,14 @@ class RealMarketDataFetcher:
                     unified_logging.warning(f"Failed to fetch from {exchange}: {e}")
                     continue
             
+            # UPGRADE: Try fallback free APIs before returning 0
+            unified_logging.info(f"Primary exchanges unavailable for {symbol}, trying free fallback APIs...")
+            fallback_data = self._fetch_from_free_apis(symbol)
+            if fallback_data and fallback_data.get('price', 0) > 0:
+                return fallback_data
+
             # No data available from any exchange - return empty result
-            unified_logging.warning(f"No market data available for {symbol} from any exchange")
+            unified_logging.warning(f"No market data available for {symbol} from any source")
             return {
                 'price': 0.0,
                 'change_24h': 0.0,
@@ -1159,7 +1174,165 @@ class RealMarketDataFetcher:
                 'timestamp': datetime.now(timezone.utc),
                 'exchange': None
             }
-    
+
+    def _fetch_from_free_apis(self, symbol: str) -> Optional[Dict[str, Any]]:
+        """
+        UPGRADE: Fallback to free APIs that don't require authentication
+        Uses CoinGecko and CryptoCompare free tiers
+        """
+        try:
+            # Extract base currency (e.g., BTC from BTC/USDT)
+            base_currency = symbol.split('/')[0] if '/' in symbol else symbol
+
+            # Try CoinGecko free API (no key needed)
+            try:
+                coingecko_id = self._symbol_to_coingecko_id(symbol)
+                if coingecko_id:
+                    url = f"https://api.coingecko.com/api/v3/simple/price"
+                    params = {
+                        'ids': coingecko_id,
+                        'vs_currencies': 'usd',
+                        'include_24hr_change': 'true',
+                        'include_24hr_vol': 'true'
+                    }
+                    response = requests.get(url, params=params, timeout=10)
+                    if response.status_code == 200:
+                        data = response.json()
+                        if coingecko_id in data:
+                            coin_data = data[coingecko_id]
+                            unified_logging.info(f"✅ Fetched {symbol} from CoinGecko free API: ${coin_data.get('usd', 0)}")
+                            return {
+                                'price': float(coin_data.get('usd', 0)),
+                                'change_24h': float(coin_data.get('usd_24h_change', 0)),
+                                'volume': float(coin_data.get('usd_24h_vol', 0)),
+                                'high_24h': 0.0,  # Not available in free tier
+                                'low_24h': 0.0,   # Not available in free tier
+                                'timestamp': datetime.now(timezone.utc),
+                                'exchange': 'coingecko_free',
+                                'asset_type': 'crypto'
+                            }
+            except Exception as e:
+                unified_logging.debug(f"CoinGecko free API failed for {symbol}: {e}")
+
+            # Try CryptoCompare free API (no key needed, higher rate limits)
+            try:
+                url = f"https://min-api.cryptocompare.com/data/pricemultifull"
+                params = {
+                    'fsyms': base_currency,
+                    'tsyms': 'USD'
+                }
+                response = requests.get(url, params=params, timeout=10)
+                if response.status_code == 200:
+                    data = response.json()
+                    if 'RAW' in data and base_currency in data['RAW'] and 'USD' in data['RAW'][base_currency]:
+                        coin_data = data['RAW'][base_currency]['USD']
+                        unified_logging.info(f"✅ Fetched {symbol} from CryptoCompare free API: ${coin_data.get('PRICE', 0)}")
+                        return {
+                            'price': float(coin_data.get('PRICE', 0)),
+                            'change_24h': float(coin_data.get('CHANGEPCT24HOUR', 0)),
+                            'volume': float(coin_data.get('VOLUME24HOUR', 0)),
+                            'high_24h': float(coin_data.get('HIGH24HOUR', 0)),
+                            'low_24h': float(coin_data.get('LOW24HOUR', 0)),
+                            'timestamp': datetime.now(timezone.utc),
+                            'exchange': 'cryptocompare_free',
+                            'asset_type': 'crypto'
+                        }
+            except Exception as e:
+                unified_logging.debug(f"CryptoCompare free API failed for {symbol}: {e}")
+
+            return None
+
+        except Exception as e:
+            unified_logging.error(f"All free API fallbacks failed for {symbol}: {e}")
+            return None
+
+    def _fetch_historical_from_yfinance(self, symbol: str, timeframe: str, limit: int) -> List[Dict[str, Any]]:
+        """
+        UPGRADE: Fallback to yfinance for historical data (free, no API key needed)
+        Works for major cryptos and stocks
+        """
+        try:
+            # Check if yfinance is available
+            try:
+                import yfinance as yf
+            except ImportError:
+                unified_logging.warning("yfinance not available. Install with: pip install yfinance")
+                return []
+
+            # Convert crypto symbol to yfinance format (e.g., BTC/USDT -> BTC-USD)
+            base_currency = symbol.split('/')[0] if '/' in symbol else symbol
+            yf_symbol = f"{base_currency}-USD"
+
+            # Convert timeframe to yfinance period
+            timeframe_map = {
+                '1m': '1m',
+                '5m': '5m',
+                '15m': '15m',
+                '1h': '1h',
+                '4h': '1d',  # yfinance doesn't have 4h, use daily
+                '1d': '1d',
+                '1w': '1wk'
+            }
+            yf_interval = timeframe_map.get(timeframe, '1h')
+
+            # Calculate period based on limit
+            # yfinance uses periods like '1d', '5d', '1mo', '3mo', '1y', '2y', '5y', 'max'
+            days_needed = limit
+            if timeframe == '1h':
+                days_needed = limit // 24 + 1
+            elif timeframe == '4h':
+                days_needed = limit // 6 + 1
+            elif timeframe == '1d':
+                days_needed = limit
+            elif timeframe == '1w':
+                days_needed = limit * 7
+
+            # Choose appropriate period
+            if days_needed <= 7:
+                period = '7d'
+            elif days_needed <= 30:
+                period = '1mo'
+            elif days_needed <= 90:
+                period = '3mo'
+            elif days_needed <= 365:
+                period = '1y'
+            elif days_needed <= 730:
+                period = '2y'
+            else:
+                period = 'max'
+
+            unified_logging.info(f"Fetching {yf_symbol} from yfinance: period={period}, interval={yf_interval}")
+
+            ticker = yf.Ticker(yf_symbol)
+            df = ticker.history(period=period, interval=yf_interval)
+
+            if df.empty:
+                unified_logging.warning(f"No data from yfinance for {yf_symbol}")
+                return []
+
+            # Convert to standard format
+            historical_data = []
+            for index, row in df.iterrows():
+                historical_data.append({
+                    'timestamp': index.to_pydatetime().replace(tzinfo=timezone.utc),
+                    'open': float(row['Open']),
+                    'high': float(row['High']),
+                    'low': float(row['Low']),
+                    'close': float(row['Close']),
+                    'volume': float(row['Volume'])
+                })
+
+            # Limit to requested count
+            if len(historical_data) > limit:
+                historical_data = historical_data[-limit:]
+
+            unified_logging.info(f"✅ Fetched {len(historical_data)} candles from yfinance for {symbol}")
+            return historical_data
+
+        except Exception as e:
+            unified_logging.error(f"yfinance fallback failed for {symbol}: {e}")
+            return []
+
     def get_all_available_symbols(self, quote_currency: str = 'USDT') -> List[str]:
         """
         Get ALL available trading symbols from all exchanges (deduplicated)
