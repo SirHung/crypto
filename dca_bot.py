@@ -11,18 +11,18 @@ from datetime import datetime, timezone, timedelta
 from enum import Enum
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .real_market_data_fetcher import real_market_data_fetcher
+    from real_market_data_fetcher import real_market_data_fetcher
 except ImportError:
     real_market_data_fetcher = None
 
 try:
-    from .portfolio_visualizer import portfolio_visualizer, AssetType
+    from portfolio_visualizer import portfolio_visualizer, AssetType
 except ImportError:
     portfolio_visualizer = None
     AssetType = None
@@ -319,7 +319,7 @@ class DCABot:
                 # Trend DCA: Buy dips in uptrend - use real trend analysis
                 try:
                     # Get market data to determine trend
-                    from .real_market_data_fetcher import real_market_data_fetcher
+                    from real_market_data_fetcher import real_market_data_fetcher
                     market_data = real_market_data_fetcher.get_market_data(config.symbol)
                     
                     if market_data:

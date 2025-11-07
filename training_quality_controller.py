@@ -14,20 +14,20 @@ from collections import Counter
 
 # Use centralized pandas/numpy bypass
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
 import numpy as np
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging
 
 try:
-    from .dynamic_thresholds import dynamic_thresholds
+    from dynamic_thresholds import dynamic_thresholds
 except ImportError:
     dynamic_thresholds = None
 
@@ -77,7 +77,7 @@ class TrainingQualityController:
         # Quality thresholds - FULLY DYNAMIC via DynamicThresholdsManager - NO HARDCODE
         # All thresholds adapt to real-time market conditions for optimal performance
         try:
-            from .market_constants import market_constants
+            from market_constants import market_constants
             
             # Get market volatility first (used by all paths)
             market_volatility = market_constants._get_market_volatility()
@@ -818,7 +818,7 @@ class TrainingQualityController:
             # Final decision: mark as outlier only if score > threshold
             # ENHANCED: Use adaptive threshold based on market volatility
             try:
-                from .market_constants import market_constants
+                from market_constants import market_constants
                 volatility = market_constants._get_market_volatility()
                 
                 # Higher volatility = more lenient outlier threshold
@@ -1179,7 +1179,7 @@ class TrainingQualityController:
             if confidence_scores and len(confidence_scores) == len(errors):
                 # High confidence should correlate with low error
                 try:
-                    from .market_constants import market_constants
+                    from market_constants import market_constants
                     confidence_threshold = market_constants.get_dynamic_confidence_threshold()
                 except Exception as e:
                     # CRITICAL: Cannot calculate confidence threshold without market data

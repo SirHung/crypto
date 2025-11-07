@@ -12,7 +12,7 @@ FEATURES:
 """
 
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -21,7 +21,7 @@ import numpy as np
 from typing import List, Dict, Any, Optional
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)

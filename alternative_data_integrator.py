@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional
 from datetime import datetime
 
-from .unified_logging_manager import UnifiedLoggingManager
+from unified_logging_manager import UnifiedLoggingManager
 
 
 @dataclass
@@ -35,25 +35,25 @@ class AlternativeDataIntegrator:
     def _init_data_sources(self):
         """Initialize real data source modules"""
         try:
-            from .kol_influence_tracker import kol_influence_tracker
+            from kol_influence_tracker import kol_influence_tracker
             self.kol_tracker = kol_influence_tracker
         except Exception:
             self.kol_tracker = None
         
         try:
-            from .advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
+            from advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
             self.sentiment_engine = sentiment_analysis_engine
         except Exception:
             self.sentiment_engine = None
         
         try:
-            from .onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
+            from onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
             self.onchain_analyzer = onchain_tokenomics_analyzer
         except Exception:
             self.onchain_analyzer = None
         
         try:
-            from .news_aggregator import news_aggregator
+            from news_aggregator import news_aggregator
             self.news_agg = news_aggregator
         except Exception:
             self.news_agg = None
@@ -102,7 +102,7 @@ class AlternativeDataIntegrator:
             
             # 4. Calculate market correlation (from market conditions)
             try:
-                from .market_constants import market_constants
+                from market_constants import market_constants
                 volatility = market_constants._get_market_volatility()
                 # Lower volatility = higher correlation
                 market_correlation = 1.0 - min(1.0, volatility)

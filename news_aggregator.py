@@ -12,18 +12,18 @@ from datetime import datetime, timezone, timedelta
 from enum import Enum
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analyzer
+    from advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analyzer
 except ImportError:
     sentiment_analyzer = None
 
 try:
-    from .news_sources_config import (
+    from news_sources_config import (
         ALL_NEWS_SOURCES, SOURCES_BY_TIER, SOURCES_BY_MARKET,
         get_sources_by_credibility, get_sources_for_market,
         SourceTier, MarketFocus

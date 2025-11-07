@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 from datetime import datetime
 
-from .unified_logging_manager import UnifiedLoggingManager
+from unified_logging_manager import UnifiedLoggingManager
 
 
 @dataclass

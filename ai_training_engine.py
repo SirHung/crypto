@@ -51,16 +51,16 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import numpy as np
 import pandas as pd
 
 # Import unified components
-from .unified_logging_manager import unified_logging
-from .real_market_data_fetcher import real_market_data_fetcher
-from .gpu_accelerator import GPUAccelerator, GPU_AVAILABLE
+from unified_logging_manager import unified_logging
+from real_market_data_fetcher import real_market_data_fetcher
+from gpu_accelerator import GPUAccelerator, GPU_AVAILABLE
 
 class AIModelType(Enum):
     """AI Model types enumeration"""
@@ -209,7 +209,7 @@ class AITrainingEngine:
         self.market_data_enabled = real_market_data_fetcher is not None
         
         # Training configuration - Dynamic from market conditions
-        from .market_constants import market_constants
+        from market_constants import market_constants
         self.market_constants = market_constants
         self.min_accuracy_threshold = self.market_constants.get_dynamic_target_accuracy()  # Dynamic based on market
         self.training_iterations = 0
@@ -264,7 +264,7 @@ class AITrainingEngine:
         try:
             # Model Ensemble Optimizer - để tối ưu ensemble weights
             try:
-                from .model_ensemble_optimizer import model_ensemble_optimizer
+                from model_ensemble_optimizer import model_ensemble_optimizer
                 self.ensemble_optimizer = model_ensemble_optimizer
                 self.unified_logger.debug("   ✅ Model Ensemble Optimizer: ENABLED")
             except Exception as e:
@@ -273,7 +273,7 @@ class AITrainingEngine:
             
             # Ensemble Validator - để validate ensemble performance
             try:
-                from .ensemble_validator import ensemble_validator
+                from ensemble_validator import ensemble_validator
                 self.ensemble_validator = ensemble_validator
                 self.unified_logger.debug("   ✅ Ensemble Validator: ENABLED")
             except Exception as e:
@@ -282,7 +282,7 @@ class AITrainingEngine:
             
             # Model Validator - để validate individual models
             try:
-                from .model_validator import model_validator
+                from model_validator import model_validator
                 self.model_validator = model_validator
                 self.unified_logger.debug("   ✅ Model Validator: ENABLED")
             except Exception as e:
@@ -294,7 +294,7 @@ class AITrainingEngine:
             
             # SHAP Explainer - để explain AI predictions
             try:
-                from .shap_explainer import shap_explainer
+                from shap_explainer import shap_explainer
                 self.shap_explainer = shap_explainer
                 self.unified_logger.debug("   ✅ SHAP Explainer: ENABLED")
             except Exception as e:
@@ -303,7 +303,7 @@ class AITrainingEngine:
             
             # Performance Tracker - để track model performance
             try:
-                from .performance_tracker import performance_tracker
+                from performance_tracker import performance_tracker
                 self.performance_tracker = performance_tracker
                 self.unified_logger.debug("   ✅ Performance Tracker: ENABLED")
             except Exception as e:
@@ -313,7 +313,7 @@ class AITrainingEngine:
             # Online Learning System (Unified - includes Adaptive Learning)
             # FIXED: Remove duplicate import - single instance for both adaptive and online learning
             try:
-                from .online_learning_system import online_learning_system
+                from online_learning_system import online_learning_system
                 self.online_learner = online_learning_system  # Unified instance
                 self.adaptive_learner = online_learning_system  # Same instance (backward compatibility)
                 self.unified_logger.debug("   ✅ Online Learning System: ENABLED (Adaptive + Online)")
@@ -324,7 +324,7 @@ class AITrainingEngine:
             
             # Reinforcement Learning - để RL optimization
             try:
-                from .reinforcement_learning import reinforcement_learning_engine
+                from reinforcement_learning import reinforcement_learning_engine
                 self.rl_engine = reinforcement_learning_engine
                 self.unified_logger.debug("   ✅ Reinforcement Learning Engine: ENABLED")
             except Exception as e:
@@ -405,7 +405,7 @@ class AITrainingEngine:
         
         # Enable AI Self-Correction monitoring
         try:
-            from .ai_self_correction import ai_self_correction_engine
+            from ai_self_correction import ai_self_correction_engine
             self.ai_self_correction = ai_self_correction_engine
             self.unified_logger.debug("✅ AI Self-Correction monitoring enabled for training engine")
         except Exception as e:
@@ -414,7 +414,7 @@ class AITrainingEngine:
     
         # Enable Training Quality Controller for >95% accuracy
         try:
-            from .training_quality_controller import training_quality_controller
+            from training_quality_controller import training_quality_controller
             self.quality_controller = training_quality_controller
             self.unified_logger.debug("✅ Training Quality Controller enabled - Target: >95% accuracy")
         except Exception as e:
@@ -643,7 +643,7 @@ class AITrainingEngine:
                 if market_data:
                     # ULTRA OPTIMIZED: Use parallel_executor singleton for intelligent resource management
                     try:
-                        from .parallel_executor import parallel_executor
+                        from parallel_executor import parallel_executor
                         
                         # Get optimal workers from parallel_executor (handles GPU, CPU, RAM automatically)
                         max_workers = parallel_executor.get_optimal_workers('io')
@@ -875,7 +875,7 @@ class AITrainingEngine:
             kol_sentiment = None  # Will be calculated from real data or historical baseline
             kol_confidence = 0.0
             try:
-                from .kol_influence_tracker import kol_influence_tracker
+                from kol_influence_tracker import kol_influence_tracker
                 kol_data = kol_influence_tracker.get_kol_influence(symbol_base)
                 if kol_data and kol_data.get('kols'):
                     # Calculate weighted sentiment from KOL posts
@@ -904,7 +904,7 @@ class AITrainingEngine:
             news_sentiment = None
             news_confidence = 0.0
             try:
-                from .news_aggregator import news_aggregator
+                from news_aggregator import news_aggregator
                 self.unified_logger.info(f"   📰 Fetching news data for {symbol_base} (last 24h)...")
                 news_data = news_aggregator.get_aggregated_news(symbol_base, hours=24)
                 if news_data and 'sentiment_score' in news_data:
@@ -941,7 +941,7 @@ class AITrainingEngine:
             social_sentiment = None
             social_confidence = 0.0
             try:
-                from .advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
+                from advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
                 self.unified_logger.info(f"   💬 Fetching social sentiment for {symbol_base}...")
                 sentiment_result = sentiment_analysis_engine.get_sentiment_score(symbol_base) if sentiment_analysis_engine else None
                 if sentiment_result and 'overall_sentiment' in sentiment_result:
@@ -1072,7 +1072,7 @@ class AITrainingEngine:
             # OPTIMIZED: Calculate ONCE for entire dataset, not per data point
             # ==================================================
             try:
-                from .unified_technical_indicators import unified_technical_indicators
+                from unified_technical_indicators import unified_technical_indicators
                 
                 # Convert market_data to DataFrame for unified_technical_indicators
                 if len(market_data) >= 200:  # Need enough data for all indicators
@@ -1335,7 +1335,7 @@ class AITrainingEngine:
                 closes_rsi = [float(market_data[i].get('close', 0)) for i in range(max(0, index-14), index+1)]
                 if len(closes_rsi) >= 14:
                     try:
-                        from .unified_technical_indicators import unified_technical_indicators
+                        from unified_technical_indicators import unified_technical_indicators
                         rsi = unified_technical_indicators.calculate_rsi(np.array(closes_rsi))
                         features.append(float(rsi[-1]) if hasattr(rsi, '__len__') else float(rsi))
                     except:
@@ -1564,7 +1564,7 @@ class AITrainingEngine:
                         
                         # Step 42: Social sentiment from sentiment engine (CACHED ONCE)
                         try:
-                            from .advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
+                            from advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
                             sentiment_result = sentiment_analysis_engine.get_sentiment_score(symbol_base) if sentiment_analysis_engine else None
                             sentiment_features['social'] = (sentiment_result.get('overall_score', 0) + 1) / 2.0 if sentiment_result else 0.5
                         except:
@@ -1582,7 +1582,7 @@ class AITrainingEngine:
                         
                         if news_cache_key not in self._news_cache:
                             try:
-                                from .advanced_nlp_sentiment import advanced_nlp_sentiment
+                                from advanced_nlp_sentiment import advanced_nlp_sentiment
                                 nlp_result = advanced_nlp_sentiment.analyze_market_sentiment(symbol_base) if advanced_nlp_sentiment else None
                                 self._news_cache[news_cache_key] = (nlp_result.sentiment_score + 1) / 2.0 if nlp_result else 0.5
                             except:
@@ -1608,7 +1608,7 @@ class AITrainingEngine:
                 if 'whale' not in cached_sentiment:
                     # Step 44: Whale activity from real whale monitor
                     try:
-                        from .whale_wallet_monitor import whale_wallet_monitor
+                        from whale_wallet_monitor import whale_wallet_monitor
                         whale_data = whale_wallet_monitor.get_whale_activity(symbol_base)
                         cached_sentiment['whale'] = whale_data.get('activity_score', 0.5) if whale_data else 0.5
                     except:
@@ -1623,7 +1623,7 @@ class AITrainingEngine:
                     
                     # Step 45: On-chain flow from tokenomics analyzer
                     try:
-                        from .onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
+                        from onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
                         onchain_data = onchain_tokenomics_analyzer.analyze_token(symbol_base)
                         cached_sentiment['onchain'] = onchain_data.get('flow_score', 0.5) if onchain_data else 0.5
                     except:
@@ -1690,7 +1690,7 @@ class AITrainingEngine:
             # PHASE 3: ALTERNATIVE DATA INTEGRATION
             # ==================================================
             try:
-                from .alternative_data_integrator import alternative_data_integrator
+                from alternative_data_integrator import alternative_data_integrator
                 symbol_base = data_point.get('symbol', 'BTC').replace('/USDT', '').replace('/USD', '')
                 alt_signals = alternative_data_integrator.get_signals(symbol_base)
                 
@@ -1709,7 +1709,7 @@ class AITrainingEngine:
             # PHASE 4: REGIME DETECTION FEATURES
             # ==================================================
             try:
-                from .regime_detection import regime_detection
+                from regime_detection import regime_detection
                 regime_data = regime_detection.detect_regime(symbol_base, '1h')
                 features.extend([
                     1.0 if regime_data.get('regime') == 'bull_trend' else 0.0,
@@ -1909,7 +1909,7 @@ class AITrainingEngine:
         Returns: Dict with indicator arrays where each array[i] corresponds to market_data[i]
         """
         try:
-            from .unified_technical_indicators import unified_technical_indicators
+            from unified_technical_indicators import unified_technical_indicators
             
             # Build cache key for entire dataset
             cache_key = f"batch_indicators_{symbol}_{timeframe}_{len(market_data)}"
@@ -2071,7 +2071,7 @@ class AITrainingEngine:
     def _calculate_atr(self, historical_data: List[Dict[str, Any]], index: int, period: int = 14) -> float:
         """Calculate Average True Range - CENTRALIZED from unified_technical_indicators - NO DUPLICATION"""
         try:
-            from .unified_technical_indicators import unified_technical_indicators
+            from unified_technical_indicators import unified_technical_indicators
             
             if index < period:
                 return 0.0
@@ -2095,7 +2095,7 @@ class AITrainingEngine:
     def _calculate_stochastic(self, historical_data: List[Dict[str, Any]], index: int, k_period: int = 14, d_period: int = 3) -> float:
         """Calculate Stochastic Oscillator - CENTRALIZED from unified_technical_indicators - NO DUPLICATION"""
         try:
-            from .unified_technical_indicators import unified_technical_indicators
+            from unified_technical_indicators import unified_technical_indicators
             
             if index < k_period:
                 return 50.0
@@ -2206,7 +2206,7 @@ class AITrainingEngine:
         try:
             # Try to use centralized fear & greed from market_constants
             try:
-                from .market_constants import market_constants
+                from market_constants import market_constants
                 return market_constants.get_fear_greed_index()
             except:
                 pass
@@ -2303,7 +2303,7 @@ class AITrainingEngine:
     def _calculate_rsi(self, data: List[Dict[str, Any]], index: int, period: int = 14) -> float:
         """Calculate RSI - CENTRALIZED from unified_technical_indicators - NO DUPLICATION"""
         try:
-            from .unified_technical_indicators import unified_technical_indicators
+            from unified_technical_indicators import unified_technical_indicators
             
             # Extract prices from data
             prices = [d.get('close', d.get('price', 0)) for d in data[max(0, index-period):index+1]]
@@ -2322,7 +2322,7 @@ class AITrainingEngine:
     def _calculate_macd(self, data: List[Dict[str, Any]], index: int) -> float:
         """Calculate MACD - CENTRALIZED from unified_technical_indicators - NO DUPLICATION"""
         try:
-            from .unified_technical_indicators import unified_technical_indicators
+            from unified_technical_indicators import unified_technical_indicators
             
             if index < 26:
                 return 0.0
@@ -2361,7 +2361,7 @@ class AITrainingEngine:
     def _calculate_bollinger_bands(self, data: List[Dict[str, Any]], index: int, period: int = 20) -> Tuple[float, float]:
         """Calculate Bollinger Bands - CENTRALIZED from unified_technical_indicators - NO DUPLICATION"""
         try:
-            from .unified_technical_indicators import unified_technical_indicators
+            from unified_technical_indicators import unified_technical_indicators
             
             if index < period:
                 return 0.0, 0.0
@@ -2554,7 +2554,7 @@ class AITrainingEngine:
                 cleared_count = 0
                 try:
                     # 1. Clear real_market_data_fetcher cache
-                    from .real_market_data_fetcher import real_market_data_fetcher
+                    from real_market_data_fetcher import real_market_data_fetcher
                     if hasattr(real_market_data_fetcher, 'data_cache'):
                         cache_key_pattern = f"historical_{symbol}_{timeframe}"
                         keys_to_remove = [k for k in real_market_data_fetcher.data_cache.keys() if cache_key_pattern in k]
@@ -2934,7 +2934,7 @@ class AITrainingEngine:
             
             # Use parallel executor for MAXIMUM speed - train all 9 models simultaneously with GPU support
             try:
-                from .parallel_executor import parallel_executor
+                from parallel_executor import parallel_executor
                 import psutil
                 
                 # Prepare training tasks for parallel execution
@@ -3403,7 +3403,7 @@ class AITrainingEngine:
                 std_acc = 0
             
             # Compare vs baseline - DYNAMIC from market conditions
-            from .market_constants import market_constants
+            from market_constants import market_constants
             baseline_accuracy = market_constants.get_dynamic_baseline_accuracy()  # Dynamic baseline from market volatility
             models_above_baseline = sum([1 for v in training_results.values() if v.get('status') in ['trained', 'trained_with_warnings'] and v.get('accuracy', 0) > baseline_accuracy])
             if verbose:
@@ -3843,7 +3843,7 @@ class AITrainingEngine:
             
             # CRITICAL: Cleanup resources to prevent memory leaks
             try:
-                from .parallel_executor import parallel_executor
+                from parallel_executor import parallel_executor
                 parallel_executor.cleanup(force=False)  # Cleanup if timeout exceeded
                 
                 # Cleanup GPU resources if available
@@ -3892,7 +3892,7 @@ class AITrainingEngine:
             
             # CRITICAL: Cleanup even on error
             try:
-                from .parallel_executor import parallel_executor
+                from parallel_executor import parallel_executor
                 parallel_executor.cleanup(force=True)  # Force cleanup on error
             except:
                 pass
@@ -4766,7 +4766,7 @@ class AITrainingEngine:
             validation_result = None
             
             try:
-                from .model_validator import model_validator
+                from model_validator import model_validator
                 
                 # Generate predictions and actuals for REAL validation
                 predictions = []
@@ -5454,7 +5454,7 @@ class AITrainingEngine:
             else:
                 # Use training quality controller for real assessment
                 try:
-                    from .training_quality_controller import training_quality_controller, DataQualityReport
+                    from training_quality_controller import training_quality_controller, DataQualityReport
                     
                     # Prepare model metrics for quality assessment
                     model_metrics = {
@@ -6094,13 +6094,13 @@ class AITrainingEngine:
             
             # ENHANCED: Use balanced hyperparameters to prevent underfitting while maintaining generalization
             try:
-                from .balanced_hyperparameters import balanced_hyperparameters
+                from balanced_hyperparameters import balanced_hyperparameters
                 hyperparams = balanced_hyperparameters.get_balanced_params(model_type.value, data_size)
                 self.unified_logger.debug(f"Using balanced hyperparameters for {model_type.value} (data_size={data_size})")
             except Exception as e:
                 self.unified_logger.warning(f"Failed to get balanced hyperparameters: {e}, trying market_constants")
                 try:
-                    from .market_constants import market_constants
+                    from market_constants import market_constants
                     hyperparams = market_constants.get_dynamic_ai_hyperparameters(model_type.value, data_size)
                 except Exception as e:
                     # NO FALLBACK: System requires real market data for hyperparameters
@@ -6990,7 +6990,7 @@ class AITrainingEngine:
         """
         try:
             # Get dynamic confidence threshold from market conditions
-            from .market_constants import market_constants
+            from market_constants import market_constants
             base_confidence = market_constants.get_dynamic_confidence_threshold()
             
             if not val_data or len(val_data) == 0:
@@ -7019,7 +7019,7 @@ class AITrainingEngine:
             
             # Factor 3: Market regime alignment
             try:
-                from .regime_detection import regime_detection
+                from regime_detection import regime_detection
                 # Use symbol from model or current training symbol - NO FALLBACK
                 symbol = getattr(model, 'symbol', None)
                 if not symbol and hasattr(self, '_current_training_symbol'):
@@ -7039,7 +7039,7 @@ class AITrainingEngine:
             
             # Factor 4: Alternative data sentiment alignment
             try:
-                from .alternative_data_integrator import alternative_data_integrator
+                from alternative_data_integrator import alternative_data_integrator
                 # Use symbol from model or current training symbol - NO FALLBACK
                 symbol = getattr(model, 'symbol', None)
                 if not symbol and hasattr(self, '_current_training_symbol'):
@@ -7306,7 +7306,7 @@ class AITrainingEngine:
             
             # 3. Determine model status with DYNAMIC thresholds
             # Get dynamic thresholds from market conditions
-            from .market_constants import market_constants
+            from market_constants import market_constants
             overfit_threshold = 0.15  # Can be dynamic based on market volatility
             underfit_threshold = market_constants.get_accuracy_threshold_moderate() if market_constants else 0.70
             
@@ -8168,7 +8168,7 @@ class AITrainingEngine:
         """Calculate Sharpe ratio from processed data - NO HARDCODED VALUES"""
         try:
             # Get dynamic risk-free rate and benchmarks from market conditions
-            from .market_constants import market_constants
+            from market_constants import market_constants
             fear_greed = market_constants.get_fear_greed_index()
             
             # Calculate expected Sharpe based on market conditions
@@ -8216,7 +8216,7 @@ class AITrainingEngine:
         """Calculate maximum drawdown from processed data - NO HARDCODED VALUES"""
         try:
             # Get dynamic drawdown thresholds from market conditions
-            from .market_constants import market_constants
+            from market_constants import market_constants
             fear_greed = market_constants.get_fear_greed_index()
             
             # Calculate expected drawdown based on market volatility
@@ -8257,7 +8257,7 @@ class AITrainingEngine:
         """Calculate win rate from validation data - NO HARDCODED VALUES"""
         try:
             # Get dynamic win rate expectations from market conditions
-            from .market_constants import market_constants
+            from market_constants import market_constants
             fear_greed = market_constants.get_fear_greed_index()
             volatility = market_constants._get_market_volatility()
             
@@ -8307,7 +8307,7 @@ class AITrainingEngine:
         """Calculate profit factor from validation data - NO HARDCODED VALUES"""
         try:
             # Get dynamic profit factor expectations from market conditions
-            from .market_constants import market_constants
+            from market_constants import market_constants
             fear_greed = market_constants.get_fear_greed_index()
             
             # Calculate expected profit factor based on market conditions
@@ -8944,7 +8944,7 @@ class AITrainingEngine:
             price_change_pct = ((predicted_price - current_price) / current_price) * 100 if current_price > 0 else 0
             
             # Decision thresholds (dynamic from market volatility)
-            from .market_constants import market_constants
+            from market_constants import market_constants
             threshold_large = market_constants.get_dynamic_threshold_large() * 100  # Convert to percentage
             threshold_small = market_constants.get_dynamic_threshold_medium() * 100
             
@@ -9088,8 +9088,8 @@ class AITrainingEngine:
                     self.unified_logger.warning(f"   Ensemble validation failed: {e}")
             
             # Calculate price targets - DYNAMIC from REAL market data for ACTUAL SYMBOL (NO HARDCODED VALUES)
-            from .market_constants import market_constants
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from market_constants import market_constants
+            from real_market_data_fetcher import real_market_data_fetcher
             
             # Get REAL price for the ACTUAL SYMBOL being predicted
             current_price = 0
@@ -9272,7 +9272,7 @@ class AITrainingEngine:
             ])
             
             # Market sentiment (5 features)
-            from .market_constants import market_constants
+            from market_constants import market_constants
             fear_greed = market_constants.get_fear_greed_index() / 100 if market_constants else 0.5
             market_regime = 0.5  # Neutral default
             
@@ -9835,7 +9835,7 @@ class AITrainingEngine:
             # Get data for multiple symbols for better generalization
             # Use dynamic symbols from market_constants if available
             try:
-                from .market_constants import market_constants
+                from market_constants import market_constants
                 symbols = market_constants.get_default_symbols()[:5]
             except Exception as e:
                 self.unified_logger.error(f"Failed to get default symbols: {e}")
@@ -10268,7 +10268,7 @@ class AITrainingEngine:
     def _integrate_advanced_analytics(self, model: AIModel, processed_data: List[Dict], model_id: str) -> Dict[str, Any]:
         """Integrate advanced analytics for enhanced accuracy"""
         try:
-            from .advanced_analytics import AdvancedAnalytics
+            from advanced_analytics import AdvancedAnalytics
             
             # Initialize advanced analytics
             analytics = AdvancedAnalytics()
@@ -10333,7 +10333,7 @@ class AITrainingEngine:
     def _integrate_meta_learning_quantum(self, model: AIModel, processed_data: List[Dict], model_id: str) -> Dict[str, Any]:
         """Integrate meta-learning quantum enhancement for higher accuracy"""
         try:
-            from .meta_learning_quantum import MetaLearningQuantumEngine
+            from meta_learning_quantum import MetaLearningQuantumEngine
             
             # Initialize meta-learning quantum engine
             meta_engine = MetaLearningQuantumEngine()
@@ -10404,7 +10404,7 @@ class AITrainingEngine:
     def _integrate_anomaly_detection(self, model: AIModel, processed_data: List[Dict], model_id: str) -> Dict[str, Any]:
         """Integrate anomaly detection for enhanced prediction reliability"""
         try:
-            from .anomaly_detector import AnomalyDetector
+            from anomaly_detector import AnomalyDetector
             
             # Initialize anomaly detector
             anomaly_detector = AnomalyDetector()
@@ -10467,7 +10467,7 @@ class AITrainingEngine:
     def _integrate_mev_detection(self, model: AIModel, processed_data: List[Dict], model_id: str) -> Dict[str, Any]:
         """Integrate MEV detection for enhanced prediction reliability"""
         try:
-            from .mev_detector import MEVDetector
+            from mev_detector import MEVDetector
             
             # Initialize MEV detector
             mev_detector = MEVDetector()
@@ -10533,7 +10533,7 @@ class AITrainingEngine:
                 # Try 4: Estimate from market data fetcher as last resort
                 if volume == 0:
                     try:
-                        from .real_market_data_fetcher import real_market_data_fetcher
+                        from real_market_data_fetcher import real_market_data_fetcher
                         recent_market = real_market_data_fetcher.get_current_price(mev_symbol)
                         if isinstance(recent_market, dict):
                             volume = recent_market.get('volume', 0)
@@ -10624,7 +10624,7 @@ class AITrainingEngine:
     def _integrate_advanced_optimizer(self, model: AIModel, processed_data: List[Dict], model_id: str) -> Dict[str, Any]:
         """Integrate advanced optimizer for enhanced prediction reliability"""
         try:
-            from .advanced_optimizer import AdvancedOptimizer
+            from advanced_optimizer import AdvancedOptimizer
             
             # Initialize advanced optimizer
             optimizer = AdvancedOptimizer()
@@ -10736,7 +10736,7 @@ class AITrainingEngine:
                         return baseline_sentiment
             
             # Fallback: Calculate from current market conditions
-            from .market_constants import market_constants
+            from market_constants import market_constants
             fear_greed = market_constants.get_fear_greed_index()
             baseline_sentiment = fear_greed / 100.0
             self.unified_logger.info(f"   Calculated {source_type} baseline from fear/greed: {baseline_sentiment:.3f}")
@@ -10744,7 +10744,7 @@ class AITrainingEngine:
             
         except Exception as e:
             self.unified_logger.warning(f"Failed to calculate historical baseline: {e}")
-            from .market_constants import market_constants
+            from market_constants import market_constants
             volatility = market_constants._get_market_volatility()
             return 0.5 - (volatility * 0.3)
     
@@ -10776,7 +10776,7 @@ class AITrainingEngine:
                         self.unified_logger.info(f"   Historical sentiment mapping: {mapping}")
                         return mapping
             
-            from .market_constants import market_constants
+            from market_constants import market_constants
             volatility = market_constants._get_market_volatility()
             return {
                 'bearish': 0.3 - (volatility * 0.2),
@@ -10803,7 +10803,7 @@ class AITrainingEngine:
                         sentiment = 0.5 + (momentum * 10)
                         return max(0.0, min(1.0, sentiment))
             
-            from .market_constants import market_constants
+            from market_constants import market_constants
             return market_constants.get_fear_greed_index() / 100.0
             
         except Exception as e:

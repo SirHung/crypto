@@ -17,13 +17,13 @@ warnings.filterwarnings('ignore')
 
 # Import unified components
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .notification_system import notification_system, NotificationPriority
+    from notification_system import notification_system, NotificationPriority
 except ImportError:
     notification_system = None
     NotificationPriority = None
@@ -324,7 +324,7 @@ class WhaleWalletMonitor:
             elif abs(wallet.balance_change) > 0:
                 # Get REAL price for accurate USD calculation
                 try:
-                    from .real_market_data_fetcher import real_market_data_fetcher
+                    from real_market_data_fetcher import real_market_data_fetcher
                     # Detect symbol from blockchain
                     symbol_map = {'eth': 'ETH/USDT', 'btc': 'BTC/USDT', 'bsc': 'BNB/USDT', 'polygon': 'MATIC/USDT'}
                     symbol = symbol_map.get(wallet.blockchain, 'ETH/USDT')
@@ -457,7 +457,7 @@ class WhaleWalletMonitor:
             # Get REAL price for accurate USD calculation
             estimated_usd = 0
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 symbol_map = {'eth': 'ETH/USDT', 'btc': 'BTC/USDT', 'bsc': 'BNB/USDT', 'polygon': 'MATIC/USDT'}
                 symbol = symbol_map.get(wallet.blockchain, 'ETH/USDT')
                 price_data = real_market_data_fetcher.get_current_price(symbol)
@@ -513,7 +513,7 @@ class WhaleWalletMonitor:
                 
                 # Calculate REAL USD value for this alert
                 try:
-                    from .real_market_data_fetcher import real_market_data_fetcher
+                    from real_market_data_fetcher import real_market_data_fetcher
                     symbol_map = {'eth': 'ETH/USDT', 'btc': 'BTC/USDT', 'bsc': 'BNB/USDT', 'polygon': 'MATIC/USDT'}
                     symbol = symbol_map.get(wallet.blockchain, 'ETH/USDT')
                     price_data = real_market_data_fetcher.get_current_price(symbol)
@@ -665,7 +665,7 @@ Time: {wallet.last_update.strftime('%Y-%m-%d %H:%M:%S')} UTC
             
             # Get REAL current price for accurate USD calculation
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 price_data = real_market_data_fetcher.get_current_price(symbol if '/' in symbol else f"{symbol}/USDT")
                 current_price = price_data.get('price', 0) if price_data else 0
             except Exception:
@@ -728,7 +728,7 @@ Time: {wallet.last_update.strftime('%Y-%m-%d %H:%M:%S')} UTC
         """Scan for large transactions in real-time from blockchain/exchange data"""
         try:
             # Get exchange netflow data from real_market_data_fetcher
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             # Get exchange inflow/outflow data
             netflow_data = real_market_data_fetcher.get_exchange_netflow(symbol, hours)
@@ -966,7 +966,7 @@ Time: {wallet.last_update.strftime('%Y-%m-%d %H:%M:%S')} UTC
                 
                 # Get REAL USD value for this wallet's balance change
                 try:
-                    from .real_market_data_fetcher import real_market_data_fetcher
+                    from real_market_data_fetcher import real_market_data_fetcher
                     symbol_map = {'eth': 'ETH/USDT', 'btc': 'BTC/USDT', 'bsc': 'BNB/USDT', 'polygon': 'MATIC/USDT'}
                     symbol = symbol_map.get(chain, 'ETH/USDT')
                     price_data = real_market_data_fetcher.get_current_price(symbol)

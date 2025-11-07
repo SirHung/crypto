@@ -12,14 +12,14 @@ warnings.filterwarnings('ignore')
 
 # Import unified components
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 # Use centralized pandas/numpy bypass
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -27,12 +27,12 @@ import numpy as np
 
 
 try:
-    from .market_constants import market_constants
+    from market_constants import market_constants
 except ImportError:
     market_constants = None
 
 try:
-    from .dynamic_thresholds import dynamic_thresholds
+    from dynamic_thresholds import dynamic_thresholds
 except ImportError:
     dynamic_thresholds = None
 

@@ -22,7 +22,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
@@ -117,7 +117,7 @@ class AdvancedNLPSentiment:
     def _get_dynamic_crypto_entities(self) -> List[str]:
         """Get crypto entities dynamically from market data"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             coins = real_market_data_fetcher.get_top_coins_by_volume(limit=50)
             if coins:
                 # Extract symbols without /USDT suffix
@@ -341,7 +341,7 @@ class AdvancedNLPSentiment:
     def _analyze_news_sentiment(self, symbol: str) -> float:
         """Analyze news sentiment using real market data"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
             
@@ -366,7 +366,7 @@ class AdvancedNLPSentiment:
     def _analyze_social_sentiment(self, symbol: str) -> float:
         """Analyze social sentiment using market volume and volatility"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
             
@@ -397,11 +397,11 @@ class AdvancedNLPSentiment:
     def _get_fear_greed_index(self) -> float:
         """Get Fear & Greed Index from market constants"""
         try:
-            from .market_constants import market_constants
+            from market_constants import market_constants
             return market_constants.get_fear_greed_index()
         except Exception:
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 btc_data = real_market_data_fetcher.get_market_data('BTC/USDT')
                 
                 if btc_data and btc_data.get('price', 0) > 0:
@@ -421,7 +421,7 @@ class AdvancedNLPSentiment:
     def _analyze_market_sentiment(self, symbol: str) -> float:
         """Analyze market sentiment based on price action and orderbook"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
             
@@ -458,7 +458,7 @@ class AdvancedNLPSentiment:
             
             # Get market data to determine events
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
                 
                 if market_data:

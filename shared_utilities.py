@@ -115,7 +115,7 @@ class SharedUtilities:
     def calculate_rsi(prices: List[float], period: int = 14) -> float:
         """Calculate RSI - DELEGATES to unified_technical_indicators, returns None if no real data"""
         try:
-            from .unified_technical_indicators import UnifiedTechnicalIndicators
+            from unified_technical_indicators import UnifiedTechnicalIndicators
             import numpy as np
             prices_array = np.array(prices) if not isinstance(prices, np.ndarray) else prices
             result = UnifiedTechnicalIndicators.calculate_rsi(prices_array, period)

@@ -5,7 +5,7 @@ Validates all data sources are using REAL market data
 """
 
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from dataclasses import dataclass
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging
@@ -66,7 +66,7 @@ class DataSourceValidator:
             # CHECK 1: Real Market Data Availability
             total_checks += 1
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 ticker = real_market_data_fetcher.get_current_price(symbol)
                 if ticker and 'price' in ticker and ticker['price'] > 0:
                     validation_results['market_data'] = 'PASS'
@@ -79,7 +79,7 @@ class DataSourceValidator:
             # CHECK 2: Historical Data Depth
             total_checks += 1
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 candles = real_market_data_fetcher.get_historical_data(symbol, '1h', 100)
                 if candles and len(candles) >= 50:
                     validation_results['historical_depth'] = 'PASS'
@@ -92,7 +92,7 @@ class DataSourceValidator:
             # CHECK 3: Data Freshness (last update within 5 minutes)
             total_checks += 1
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 ticker = real_market_data_fetcher.get_current_price(symbol)
                 if ticker and 'timestamp' in ticker:
                     from datetime import datetime, timedelta, timezone
@@ -111,8 +111,8 @@ class DataSourceValidator:
             # CHECK 4: Indicator Calculation Validity
             total_checks += 1
             try:
-                from .unified_technical_indicators import unified_technical_indicators
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from unified_technical_indicators import unified_technical_indicators
+                from real_market_data_fetcher import real_market_data_fetcher
                 # pandas already imported at module level with python313_compatibility fix
                 
                 candles = real_market_data_fetcher.get_historical_data(symbol, '1h', 100)
@@ -264,7 +264,7 @@ class DataSourceValidator:
     def _validate_market_data(self) -> DataSourceStatus:
         """Validate real_market_data_fetcher"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             # Test fetching data
             test_data = real_market_data_fetcher.get_current_price("BTC/USDT")
@@ -299,8 +299,8 @@ class DataSourceValidator:
     def _validate_technical_indicators(self) -> DataSourceStatus:
         """Validate unified_technical_indicators"""
         try:
-            from .unified_technical_indicators import unified_technical_indicators
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from unified_technical_indicators import unified_technical_indicators
+            from real_market_data_fetcher import real_market_data_fetcher
             
             # Get real data
             test_data = real_market_data_fetcher.get_historical_data("BTC/USDT", "1h", 100)
@@ -334,7 +334,7 @@ class DataSourceValidator:
     def _validate_sentiment(self) -> DataSourceStatus:
         """Validate sentiment_analysis_engine"""
         try:
-            from .advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
+            from advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
             
             # Check if connected to real news sources
             is_real = sentiment_analysis_engine is not None
@@ -361,7 +361,7 @@ class DataSourceValidator:
     def _validate_onchain(self) -> DataSourceStatus:
         """Validate onchain_tokenomics_analyzer"""
         try:
-            from .onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
+            from onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
             
             is_real = onchain_tokenomics_analyzer is not None
             
@@ -387,7 +387,7 @@ class DataSourceValidator:
     def _validate_kol(self) -> DataSourceStatus:
         """Validate kol_influence_tracker"""
         try:
-            from .kol_influence_tracker import kol_influence_tracker
+            from kol_influence_tracker import kol_influence_tracker
             
             is_real = kol_influence_tracker is not None
             
@@ -413,7 +413,7 @@ class DataSourceValidator:
     def _validate_whale(self) -> DataSourceStatus:
         """Validate whale_wallet_monitor"""
         try:
-            from .whale_wallet_monitor import whale_wallet_monitor
+            from whale_wallet_monitor import whale_wallet_monitor
             
             is_real = whale_wallet_monitor is not None
             
@@ -439,7 +439,7 @@ class DataSourceValidator:
     def _validate_order_flow(self) -> DataSourceStatus:
         """Validate order_flow_tracker"""
         try:
-            from .order_flow_tracker import order_flow_tracker
+            from order_flow_tracker import order_flow_tracker
             
             is_real = order_flow_tracker is not None
             
@@ -465,7 +465,7 @@ class DataSourceValidator:
     def _validate_volatility(self) -> DataSourceStatus:
         """Validate volatility_forecaster"""
         try:
-            from .volatility_forecaster import volatility_forecaster
+            from volatility_forecaster import volatility_forecaster
             
             is_real = volatility_forecaster is not None
             
@@ -491,7 +491,7 @@ class DataSourceValidator:
     def _validate_forex(self) -> DataSourceStatus:
         """Validate forex_market_data_fetcher"""
         try:
-            from .forex_market_data_fetcher import forex_market_data_fetcher
+            from forex_market_data_fetcher import forex_market_data_fetcher
             
             # Forex fetcher is active and provides real data from forex APIs
             is_real = forex_market_data_fetcher is not None

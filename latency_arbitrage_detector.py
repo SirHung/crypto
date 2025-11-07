@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 # Use centralized pandas/numpy bypass
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 import asyncio
 import aiohttp
 import time
-from .unified_logging_manager import unified_logging
+from unified_logging_manager import unified_logging
 
 class ArbitrageType(Enum):
     CROSS_EXCHANGE = "cross_exchange"
@@ -149,7 +149,7 @@ class LatencyArbitrageDetector:
                 
                 try:
                     # Try to fetch real order book or ticker to measure actual latency
-                    from .real_market_data_fetcher import real_market_data_fetcher
+                    from real_market_data_fetcher import real_market_data_fetcher
 
                     # FIXED: Use configurable test symbol instead of hardcoded 'BTC/USDT'
                     # Actual API call to measure latency
@@ -205,7 +205,7 @@ class LatencyArbitrageDetector:
             
             for exchange in exchanges:
                 # Fetch REAL price data from exchange
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 
                 try:
                     real_price = real_market_data_fetcher.get_real_time_price(symbol, exchange)
@@ -261,7 +261,7 @@ class LatencyArbitrageDetector:
                 # Path: Base -> Intermediate -> Quote -> Base
                 
                 # Get real exchange rates from market
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 
                 try:
                     # Try to get real rates
@@ -314,7 +314,7 @@ class LatencyArbitrageDetector:
             
             for pair1, pair2 in pairs:
                 # Get REAL historical price data
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 
                 try:
                     hist_data1 = real_market_data_fetcher.get_historical_data(pair1, '1m', lookback_period)

@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 
 # Use centralized pandas/numpy bypass
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -34,7 +34,7 @@ from datetime import datetime, timedelta
 import asyncio
 import aiohttp
 import uuid
-from .unified_logging_manager import unified_logging
+from unified_logging_manager import unified_logging
 
 class AdverseSelectionLevel(Enum):
     LOW = "low"
@@ -115,7 +115,7 @@ class MarketMakingOptimizer:
         self.quote_history = {}
         
         # DYNAMIC: Get history window from market constants instead of hardcoding
-        from .market_constants import market_constants
+        from market_constants import market_constants
         self.history_window = market_constants.get_history_window() if market_constants else 1000
         
         self.logger.info("✅ Market Making Optimizer initialized - God Mode 10000")

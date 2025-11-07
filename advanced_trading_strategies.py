@@ -32,7 +32,7 @@ import json
 
 # Use centralized pandas/numpy bypass
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -40,21 +40,21 @@ import numpy as np
 
 # Import unified modules
 try:
-    from .unified_logging_manager import UnifiedLoggingManager
+    from unified_logging_manager import UnifiedLoggingManager
     unified_logger = UnifiedLoggingManager.get_logger("advanced_trading_strategies")
 except ImportError:
     unified_logger = logging.getLogger("advanced_trading_strategies")
 
 try:
-    from .market_constants import market_constants
+    from market_constants import market_constants
 except ImportError:
     market_constants = None
 
 # Import from unified_data_structures
-from .unified_data_structures import TradingStrategy, PositionSide
+from unified_data_structures import TradingStrategy, PositionSide
 
 try:
-    from .market_constants import MarketConstants
+    from market_constants import MarketConstants
     market_constants = MarketConstants()
 except ImportError:
     market_constants = None
@@ -89,7 +89,7 @@ class TradeSignal:
 
 # Use unified Position from unified_data_structures
 try:
-    from .unified_data_structures import Position, PositionSide
+    from unified_data_structures import Position, PositionSide
 except ImportError:
     @dataclass
     class Position:
@@ -118,7 +118,7 @@ class AdvancedTradingStrategies:
             
             # Load dynamic config values from unified_config - NO HARDCODED FALLBACKS
             try:
-                from .unified_config import unified_config
+                from unified_config import unified_config
                 self.risk_per_trade = unified_config.get('trading.risk_per_trade', market_constants.get_dynamic_risk_per_trade() / 100.0)
                 self.stop_loss_pct = unified_config.get('trading.stop_loss_percent', market_constants.get_dynamic_threshold_large())
                 self.take_profit_pct = unified_config.get('trading.take_profit_percent', market_constants.get_dynamic_threshold_large() * 2.0)
@@ -257,7 +257,7 @@ class AdvancedTradingStrategies:
         """Get market data for symbol from centralized real sources - NO DUPLICATION"""
         try:
             # Use centralized real_market_data_fetcher - NO DUPLICATE CODE
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             cache_key = f"{symbol}_{timeframe}_{limit}"
             current_time = time.time()
@@ -311,7 +311,7 @@ class AdvancedTradingStrategies:
                 return {}
             
             # CRITICAL: Use unified technical indicators to avoid code duplication
-            from .unified_technical_indicators import unified_technical_indicators
+            from unified_technical_indicators import unified_technical_indicators
             
             indicators = {}
             
@@ -963,11 +963,11 @@ class AdvancedTradingStrategies:
             # Get account balance dynamically - NO HARDCODED VALUES
             # Try to get real balance from portfolio manager or config
             try:
-                from .portfolio_manager import portfolio_manager
+                from portfolio_manager import portfolio_manager
                 account_balance = portfolio_manager.get_total_balance()
             except:
                 # Fallback to config value
-                from .unified_config import unified_config
+                from unified_config import unified_config
                 account_balance = unified_config.get('trading.initial_balance', 10000) if unified_config else 10000
             
             # Risk per trade percentage

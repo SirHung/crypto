@@ -19,7 +19,7 @@ warnings.filterwarnings('ignore')
 
 # Import unified components
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
@@ -112,7 +112,7 @@ class IntelligentResourceManager:
             # Use system resources to the fullest without crashing
             # Thresholds are now configurable via unified_config
             try:
-                from .unified_config import unified_config
+                from unified_config import unified_config
                 self.thresholds = {
                     'cpu_critical': unified_config.get('performance.cpu_critical', 98.0),
                     'cpu_danger': unified_config.get('performance.cpu_danger', 95.0),
@@ -154,7 +154,7 @@ class IntelligentResourceManager:
             
             # Intelligent scaling factors (configurable)
             try:
-                from .unified_config import unified_config
+                from unified_config import unified_config
                 self.performance_mode = unified_config.get('performance.mode', 'maximum')  # 'maximum', 'balanced', 'conservative'
                 self.auto_scale_enabled = unified_config.get('performance.auto_scale_enabled', True)
             except ImportError:
@@ -168,7 +168,7 @@ class IntelligentResourceManager:
             
             # Auto-adjustment settings
             try:
-                from .unified_config import unified_config
+                from unified_config import unified_config
                 self.auto_adjust_enabled = unified_config.get('performance.auto_adjust_enabled', True)
                 self.aggressive_optimization = unified_config.get('performance.aggressive_optimization', False)
             except ImportError:
@@ -454,7 +454,7 @@ class IntelligentResourceManager:
                         
                         # Try to reduce cache sizes in modules if available
                         try:
-                            from .unified_cache_manager import unified_cache_manager
+                            from unified_cache_manager import unified_cache_manager
                             unified_cache_manager.emergency_cleanup()
                         except:
                             pass
@@ -759,7 +759,7 @@ class IntelligentResourceManager:
             
             # Pre-cache market data
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 for symbol in symbols:
                     try:
                         real_market_data_fetcher.get_current_price(symbol)
@@ -772,14 +772,14 @@ class IntelligentResourceManager:
             
             # Warm up indicators
             try:
-                from .unified_technical_indicators import unified_technical_indicators
+                from unified_technical_indicators import unified_technical_indicators
                 results['indicators_ready'] = True
             except:
                 pass
             
             # Check AI models
             try:
-                from .ai_training_engine import ai_training_engine
+                from ai_training_engine import ai_training_engine
                 results['models_ready'] = hasattr(ai_training_engine, 'ai_models')
             except:
                 pass

@@ -7,48 +7,48 @@ ZERO WRAPPERS/FALLBACKS - REAL DATA ONLY
 """
 
 # CRITICAL: Fix Python 3.13 _pyrepl bug FIRST before any other imports
-from . import python313_compatibility
+import python313_compatibility
 
 # Core functionality exports
-from .unified_logging_manager import unified_logging
-from .unified_config import unified_config
-from .market_constants import market_constants
+from unified_logging_manager import unified_logging
+from unified_config import unified_config
+from market_constants import market_constants
 
 # Authentication & Security
-from .authentication_manager import authentication_manager, Permission, UserRole, UserStatus
+from authentication_manager import authentication_manager, Permission, UserRole, UserStatus
 
 # Market Data
-from .real_market_data_fetcher import real_market_data_fetcher
-from .forex_market_data_fetcher import forex_market_data_fetcher
+from real_market_data_fetcher import real_market_data_fetcher
+from forex_market_data_fetcher import forex_market_data_fetcher
 
 # AI & Prediction - LAZY LOADING to avoid circular imports
 # These will be imported when needed, not at module level
 
 # Trading
-from .advanced_trading_bot import advanced_trading_bot
-from .portfolio_manager import portfolio_manager
-from .dca_bot import dca_bot
+from advanced_trading_bot import advanced_trading_bot
+from portfolio_manager import portfolio_manager
+from dca_bot import dca_bot
 
 # Analysis
-from .advanced_backtesting import advanced_backtesting_engine as backtesting_engine
-from .onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
-from .regime_detection import regime_detection_engine as regime_detection
-from .kol_influence_tracker import kol_influence_tracker
-from .whale_wallet_monitor import whale_wallet_monitor
+from advanced_backtesting import advanced_backtesting_engine as backtesting_engine
+from onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
+from regime_detection import regime_detection_engine as regime_detection
+from kol_influence_tracker import kol_influence_tracker
+from whale_wallet_monitor import whale_wallet_monitor
 
 # Advanced Features
-from .portfolio_visualizer import portfolio_visualizer
-from .funding_rate_tracker import funding_rate_tracker
-from .order_book_analyzer import order_book_analyzer
-from .news_aggregator import news_aggregator
-from .pattern_recognition import pattern_recognition
-from .multi_timeframe_analyzer import multi_timeframe_analyzer
+from portfolio_visualizer import portfolio_visualizer
+from funding_rate_tracker import funding_rate_tracker
+from order_book_analyzer import order_book_analyzer
+from news_aggregator import news_aggregator
+from pattern_recognition import pattern_recognition
+from multi_timeframe_analyzer import multi_timeframe_analyzer
 
 # System
-from .smart_alert_system import smart_alert_system
-from .advanced_search_engine import advanced_search_engine
-from .airdrop_manager import airdrop_manager
-from .system_validator import system_validator
+from smart_alert_system import smart_alert_system
+from advanced_search_engine import advanced_search_engine
+from airdrop_manager import airdrop_manager
+from system_validator import system_validator
 # performance_optimizer, system_health_manager, system_warmup merged into intelligent_resource_manager
 # batch_processor, distributed_computing merged into parallel_executor
 # settings_manager merged into unified_config
@@ -65,12 +65,12 @@ def _lazy_import_god_mode_2000():
     global mobile_api, APIResponse, WebSocketMessage
     global blockchain_integration, BlockchainNetwork, DeFiPosition
     
-    from .risk_management import risk_management, RiskMetrics, PositionSize
-    from .advanced_analytics import advanced_analytics, CorrelationAnalysis, ClusterResult, MonteCarloResult
-    from .tax_calculator import tax_calculator, TaxReport, TaxMethod, TransactionType
-    from .social_trading import social_trading, TraderProfile, TradingSignal, TraderTier
-    from .mobile_api import mobile_api, APIResponse, WebSocketMessage
-    from .blockchain_integration import blockchain_integration, BlockchainNetwork, DeFiPosition
+    from risk_management import risk_management, RiskMetrics, PositionSize
+    from advanced_analytics import advanced_analytics, CorrelationAnalysis, ClusterResult, MonteCarloResult
+    from tax_calculator import tax_calculator, TaxReport, TaxMethod, TransactionType
+    from social_trading import social_trading, TraderProfile, TradingSignal, TraderTier
+    from mobile_api import mobile_api, APIResponse, WebSocketMessage
+    from blockchain_integration import blockchain_integration, BlockchainNetwork, DeFiPosition
 
 # God Mode 10000 - Ultra Advanced AI & Trading (LAZY LOADING)
 def _lazy_import_god_mode_10000_ai():
@@ -81,11 +81,11 @@ def _lazy_import_god_mode_10000_ai():
     global advanced_nlp_sentiment, SentimentAnalysis
     global strategy_optimizer, OptimizationResult, ParameterRange
     
-    from .reinforcement_learning import reinforcement_learning
-    from .arbitrage_bot import arbitrage_bot, ArbitrageOpportunity, ArbitrageType
-    from .market_making_bot import market_making_bot, MarketMakingOrder
-    from .advanced_nlp_sentiment import advanced_nlp_sentiment, SentimentAnalysis
-    from .strategy_optimizer import strategy_optimizer, OptimizationResult, ParameterRange
+    from reinforcement_learning import reinforcement_learning
+    from arbitrage_bot import arbitrage_bot, ArbitrageOpportunity, ArbitrageType
+    from market_making_bot import market_making_bot, MarketMakingOrder
+    from advanced_nlp_sentiment import advanced_nlp_sentiment, SentimentAnalysis
+    from strategy_optimizer import strategy_optimizer, OptimizationResult, ParameterRange
 
 # God Mode 10000 - Accuracy Enhancement (LAZY LOADING)
 def _lazy_import_accuracy_modules():
@@ -94,9 +94,9 @@ def _lazy_import_accuracy_modules():
     global order_flow_tracker, OrderFlowMetrics
     global volatility_forecaster, VolatilityForecast
     
-    from .ensemble_validator import ensemble_validator, ModelPerformance
-    from .order_flow_tracker import order_flow_tracker, OrderFlowMetrics
-    from .volatility_forecaster import volatility_forecaster, VolatilityForecast
+    from ensemble_validator import ensemble_validator, ModelPerformance
+    from order_flow_tracker import order_flow_tracker, OrderFlowMetrics
+    from volatility_forecaster import volatility_forecaster, VolatilityForecast
 
 # God Mode 10000 - Complete Features (LAZY LOADING)
 def _lazy_import_complete_features():
@@ -108,12 +108,12 @@ def _lazy_import_complete_features():
     global training_quality_controller, DataQualityReport, FeatureImportance, TrainingQualityMetrics
     global signal_aggregator, AggregatedSignal, SignalStrength
     
-    from .meta_ai_content_generator import meta_ai_content, ContentTemplate
-    from .shap_explainer import shap_explainer, SHAPExplanation, SHAPFactor
-    from .performance_tracker import performance_tracker, PerformanceMetrics, TradeResult
-    from .data_source_validator import data_source_validator, DataSourceStatus
-    from .training_quality_controller import training_quality_controller, DataQualityReport, FeatureImportance, TrainingQualityMetrics
-    from .signal_aggregator import signal_aggregator, AggregatedSignal, SignalStrength
+    from meta_ai_content_generator import meta_ai_content, ContentTemplate
+    from shap_explainer import shap_explainer, SHAPExplanation, SHAPFactor
+    from performance_tracker import performance_tracker, PerformanceMetrics, TradeResult
+    from data_source_validator import data_source_validator, DataSourceStatus
+    from training_quality_controller import training_quality_controller, DataQualityReport, FeatureImportance, TrainingQualityMetrics
+    from signal_aggregator import signal_aggregator, AggregatedSignal, SignalStrength
 
 # God Mode 10000 - Prediction System (LAZY LOADING)
 def _lazy_import_prediction_system():
@@ -122,7 +122,7 @@ def _lazy_import_prediction_system():
     global liquidity_cascade_detector, network_effect_indicators
     global regime_predictor_advanced, uncertainty_quantification
     
-    from .enhanced_prediction_system import (
+    from enhanced_prediction_system import (
         market_microstructure, smart_money_tracker, cross_asset_correlation,
         liquidity_cascade_detector, network_effect_indicators, 
         regime_predictor_advanced, uncertainty_quantification
@@ -148,22 +148,22 @@ def _lazy_import_advanced_modules():
     global latency_arbitrage_detector
     global model_ensemble_optimizer
     
-    from .execution_quality_optimizer import execution_optimizer
-    from .dynamic_risk_adjuster import dynamic_risk_adjuster
-    from .online_learning_system import online_learning_system
-    from .transaction_cost_analyzer import transaction_cost_analyzer
-    from .multi_strategy_coordinator import multi_strategy_coordinator
-    from .alternative_data_integrator import alternative_data_integrator
-    from .portfolio_manager import position_manager_advanced, PositionAction
-    from .anomaly_detector import anomaly_detector
-    from .unified_cache_manager import feature_store
-    from .smart_order_types import smart_order_manager
-    from .copy_trading_system import copy_trading_system
-    from .real_trading_execution import real_trading_execution
-    from .dex_trading_integration import dex_trading_integration
-    from .market_making_optimizer import market_making_optimizer
-    from .latency_arbitrage_detector import latency_arbitrage_detector
-    from .model_ensemble_optimizer import model_ensemble_optimizer
+    from execution_quality_optimizer import execution_optimizer
+    from dynamic_risk_adjuster import dynamic_risk_adjuster
+    from online_learning_system import online_learning_system
+    from transaction_cost_analyzer import transaction_cost_analyzer
+    from multi_strategy_coordinator import multi_strategy_coordinator
+    from alternative_data_integrator import alternative_data_integrator
+    from portfolio_manager import position_manager_advanced, PositionAction
+    from anomaly_detector import anomaly_detector
+    from unified_cache_manager import feature_store
+    from smart_order_types import smart_order_manager
+    from copy_trading_system import copy_trading_system
+    from real_trading_execution import real_trading_execution
+    from dex_trading_integration import dex_trading_integration
+    from market_making_optimizer import market_making_optimizer
+    from latency_arbitrage_detector import latency_arbitrage_detector
+    from model_ensemble_optimizer import model_ensemble_optimizer
 
 # Initialize lazy imports on first access
 _lazy_loaded = {

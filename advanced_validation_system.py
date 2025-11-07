@@ -20,7 +20,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import numpy as np
@@ -28,18 +28,18 @@ import pandas as pd
 
 # Import unified components
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .real_market_data_fetcher import real_market_data_fetcher
+    from real_market_data_fetcher import real_market_data_fetcher
 except ImportError:
     real_market_data_fetcher = None
 
 try:
-    from .market_constants import market_constants
+    from market_constants import market_constants
 except ImportError:
     market_constants = None
 

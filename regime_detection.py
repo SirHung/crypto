@@ -16,13 +16,13 @@ warnings.filterwarnings('ignore')
 
 # Import unified components
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .real_market_data_fetcher import real_market_data_fetcher
+    from real_market_data_fetcher import real_market_data_fetcher
 except ImportError:
     real_market_data_fetcher = None
 
@@ -314,7 +314,7 @@ class RegimeDetectionEngine:
     def _calculate_rsi(self, prices: List[float], period: int = 14) -> float:
         """Calculate RSI - CENTRALIZED from unified_technical_indicators - NO DUPLICATION"""
         try:
-            from .unified_technical_indicators import unified_technical_indicators
+            from unified_technical_indicators import unified_technical_indicators
             # Use centralized RSI calculation - NO DUPLICATE CODE
             return unified_technical_indicators.calculate_rsi(prices, period)
         except Exception:
@@ -323,7 +323,7 @@ class RegimeDetectionEngine:
     def _calculate_macd(self, prices: List[float]) -> Dict[str, float]:
         """Calculate MACD - CENTRALIZED from unified_technical_indicators - NO DUPLICATION"""
         try:
-            from .unified_technical_indicators import unified_technical_indicators
+            from unified_technical_indicators import unified_technical_indicators
             # Use centralized MACD calculation - NO DUPLICATE CODE
             return unified_technical_indicators.calculate_macd(prices)
         except Exception:

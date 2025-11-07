@@ -14,18 +14,18 @@ from dataclasses import dataclass
 import time
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .unified_config import unified_config
+    from unified_config import unified_config
 except ImportError:
     unified_config = None
 
 try:
-    from .python313_compatibility import _apply_pyrepl_fix
+    from python313_compatibility import _apply_pyrepl_fix
 except ImportError:
     # Fallback if module not found
     def _apply_pyrepl_fix():
@@ -65,7 +65,7 @@ class ParallelExecutor:
         # This ensures ALL modules use consistent resource limits
         self.resource_manager = None
         try:
-            from .intelligent_resource_manager import intelligent_resource_manager
+            from intelligent_resource_manager import intelligent_resource_manager
             self.resource_manager = intelligent_resource_manager
             self.logger.info("✅ Integrated with Intelligent Resource Manager for dynamic worker calculation")
         except ImportError:

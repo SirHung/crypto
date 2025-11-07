@@ -38,14 +38,14 @@ from scipy.optimize import minimize
 
 # Use centralized pandas/numpy bypass
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
 import numpy as np
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging
@@ -88,8 +88,8 @@ class RiskManagement:
         self.unified_logger = unified_logging.get_logger("risk_management")
         
         # Load REAL risk parameters from config - NO HARDCODE
-        from .unified_config import unified_config
-        from .market_constants import market_constants
+        from unified_config import unified_config
+        from market_constants import market_constants
         
         self.max_portfolio_risk = unified_config.get('risk.max_portfolio_risk', 0.02)  # Default 2% if not in config
         self.max_position_risk = unified_config.get('risk.max_position_risk', 0.01)  # Default 1% if not in config

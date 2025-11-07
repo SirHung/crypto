@@ -54,7 +54,7 @@ FEATURES:
 
 # Use centralized pandas/numpy bypass
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -73,31 +73,31 @@ warnings.filterwarnings('ignore')
 # pandas and numpy already imported at top with python313_compatibility fix
 
 # Import unified components - NO FALLBACK/BYPASS
-from .unified_logging_manager import unified_logging
-from .funding_rate_tracker import funding_rate_tracker
-from .market_constants import market_constants
-from .ai_integration_manager import ai_integration_manager
-from .real_market_data_fetcher import real_market_data_fetcher
-from .advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
-from .kol_influence_tracker import kol_influence_tracker
-from .whale_wallet_monitor import whale_wallet_monitor
-from .onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
-from .regime_detection import regime_detection_engine
-from .cross_chain_analyzer import cross_chain_analyzer
-from .advanced_analytics import advanced_analytics
-from .meta_learning_quantum import meta_learning_quantum_engine
-from .anomaly_detector import anomaly_detector
-from .mev_detector import mev_detector
+from unified_logging_manager import unified_logging
+from funding_rate_tracker import funding_rate_tracker
+from market_constants import market_constants
+from ai_integration_manager import ai_integration_manager
+from real_market_data_fetcher import real_market_data_fetcher
+from advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
+from kol_influence_tracker import kol_influence_tracker
+from whale_wallet_monitor import whale_wallet_monitor
+from onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
+from regime_detection import regime_detection_engine
+from cross_chain_analyzer import cross_chain_analyzer
+from advanced_analytics import advanced_analytics
+from meta_learning_quantum import meta_learning_quantum_engine
+from anomaly_detector import anomaly_detector
+from mev_detector import mev_detector
 
-from .performance_tracker import performance_tracker
-from .data_source_validator import data_source_validator
-from .training_quality_controller import training_quality_controller
-from .unified_technical_indicators import unified_technical_indicators
-from .news_aggregator import news_aggregator
-from .ensemble_validator import ensemble_validator
-from .model_validator import model_validator
-from .order_flow_tracker import order_flow_tracker
-from .volatility_forecaster import volatility_forecaster
+from performance_tracker import performance_tracker
+from data_source_validator import data_source_validator
+from training_quality_controller import training_quality_controller
+from unified_technical_indicators import unified_technical_indicators
+from news_aggregator import news_aggregator
+from ensemble_validator import ensemble_validator
+from model_validator import model_validator
+from order_flow_tracker import order_flow_tracker
+from volatility_forecaster import volatility_forecaster
 
 # NOTE: Cannot import ai_training_engine and reinforcement_learning here to avoid circular imports
 # They will be imported lazily when needed
@@ -107,8 +107,8 @@ from .volatility_forecaster import volatility_forecaster
 # uncertainty_quantification are defined in THIS file, no need to import
 
 # Online Learning System (includes Adaptive Learning - merged from adaptive_learning_engine)
-from .online_learning_system import online_learning_system as adaptive_learning_engine
-from .signal_aggregator import signal_aggregator
+from online_learning_system import online_learning_system as adaptive_learning_engine
+from signal_aggregator import signal_aggregator
 
 # confidence_enhancer REMOVED - use only REAL AI confidence, NO artificial enhancement
 
@@ -152,7 +152,7 @@ class SignalStrength(Enum):
         # Use market_terminology for accurate detection
         try:
             if symbol:
-                from .market_terminology import market_terminology
+                from market_terminology import market_terminology
                 # Detect market type from symbol
                 is_forex = market_terminology.is_forex_market(symbol)
             else:
@@ -387,7 +387,7 @@ class EnhancedPredictionSystem:
             self.prediction_count = 0
             
             # Dynamic weight constraints from market conditions
-            from .dynamic_thresholds import dynamic_thresholds
+            from dynamic_thresholds import dynamic_thresholds
             if dynamic_thresholds:
                 thresholds = dynamic_thresholds.get_all_thresholds()
                 ensemble_threshold = thresholds.get('ensemble_weight_threshold', 0.35)
@@ -472,7 +472,7 @@ class EnhancedPredictionSystem:
         """Lazy load AI Training Engine to avoid circular imports"""
         if self.ai_training_engine is None:
             try:
-                from .ai_training_engine import ai_training_engine
+                from ai_training_engine import ai_training_engine
                 self.ai_training_engine = ai_training_engine
                 self.modules_available['ai_training_engine'] = True
                 self.unified_logger.debug("AI Training Engine loaded lazily")
@@ -582,7 +582,7 @@ class EnhancedPredictionSystem:
             
             if volatility is not None:
                 # Dynamic thresholds from market conditions
-                from .dynamic_thresholds import dynamic_thresholds
+                from dynamic_thresholds import dynamic_thresholds
                 if dynamic_thresholds:
                     vol_high = dynamic_thresholds.get_all_thresholds().get('current_volatility', 50.0) / 500.0  # Convert % to decimal
                     vol_low = vol_high * 0.2  # Low = 20% of typical
@@ -613,7 +613,7 @@ class EnhancedPredictionSystem:
                         quality_score = data_quality['quality_score']
                         
                         # Dynamic quality thresholds from market
-                        from .dynamic_thresholds import dynamic_thresholds
+                        from dynamic_thresholds import dynamic_thresholds
                         if dynamic_thresholds:
                             min_quality = dynamic_thresholds.get_min_data_quality_threshold() / 100.0
                         else:
@@ -648,7 +648,7 @@ class EnhancedPredictionSystem:
                             recent_accuracy = sum(1 for x in source_history[-recent_count:] if x) / recent_count
                             
                             # Get dynamic accuracy threshold
-                            from .dynamic_thresholds import dynamic_thresholds
+                            from dynamic_thresholds import dynamic_thresholds
                             if dynamic_thresholds:
                                 target_acc = dynamic_thresholds.get_model_accuracy_threshold()
                             else:
@@ -685,7 +685,7 @@ class EnhancedPredictionSystem:
                             avg_ensemble_accuracy = sum(all_sources_history) / len(all_sources_history)
                             
                             # Get dynamic ensemble threshold
-                            from .dynamic_thresholds import dynamic_thresholds
+                            from dynamic_thresholds import dynamic_thresholds
                             if dynamic_thresholds:
                                 ens_threshold = dynamic_thresholds.get_all_thresholds().get('min_ensemble_accuracy', 0.70)
                             else:
@@ -743,7 +743,7 @@ class EnhancedPredictionSystem:
                         historical_accuracy = source_history['accuracy']
                         
                         # Get dynamic accuracy target
-                        from .dynamic_thresholds import dynamic_thresholds
+                        from dynamic_thresholds import dynamic_thresholds
                         if dynamic_thresholds:
                             target = dynamic_thresholds.get_model_accuracy_threshold()
                         else:
@@ -783,7 +783,7 @@ class EnhancedPredictionSystem:
                             cv_mean = sum(chunk_accuracies) / len(chunk_accuracies)
                             
                             # Get dynamic thresholds
-                            from .dynamic_thresholds import dynamic_thresholds
+                            from dynamic_thresholds import dynamic_thresholds
                             if dynamic_thresholds:
                                 max_cv_std = dynamic_thresholds.get_all_thresholds().get('max_cv_std', 0.12)
                                 min_cv_score = dynamic_thresholds.get_all_thresholds().get('min_cv_score', 0.70)
@@ -812,7 +812,7 @@ class EnhancedPredictionSystem:
                         forecast_conf = vol_forecast['forecast_confidence']
                         
                         # Get dynamic confidence threshold
-                        from .dynamic_thresholds import dynamic_thresholds
+                        from dynamic_thresholds import dynamic_thresholds
                         if dynamic_thresholds:
                             conf_threshold = dynamic_thresholds.get_confidence_threshold()
                         else:
@@ -1932,7 +1932,7 @@ class EnhancedPredictionSystem:
             if asset_type == 'forex':
                 # Use forex data fetcher
                 try:
-                    from .forex_market_data_fetcher import forex_market_data_fetcher
+                    from forex_market_data_fetcher import forex_market_data_fetcher
                     
                     # Get current quote
                     quote = forex_market_data_fetcher.get_current_quote(symbol)
@@ -3723,7 +3723,7 @@ class EnhancedPredictionSystem:
     async def _get_rl_prediction(self, symbol: str, market_data: Dict[str, Any]) -> Optional[PredictionSource]:
         """Get prediction from Reinforcement Learning Agent - GOD MODE 10000"""
         try:
-            from .reinforcement_learning import reinforcement_learning
+            from reinforcement_learning import reinforcement_learning
             if not reinforcement_learning:
                 return None
             
@@ -3783,7 +3783,7 @@ class EnhancedPredictionSystem:
     async def _get_advanced_nlp_prediction(self, symbol: str, market_data: Dict[str, Any]) -> Optional[PredictionSource]:
         """Get prediction from Advanced NLP Sentiment - GOD MODE 10000"""
         try:
-            from .advanced_nlp_sentiment import advanced_nlp_sentiment
+            from advanced_nlp_sentiment import advanced_nlp_sentiment
             if not advanced_nlp_sentiment:
                 return None
             
@@ -3792,7 +3792,7 @@ class EnhancedPredictionSystem:
             
             # Try to get news from news aggregator if available
             try:
-                from .news_aggregator import news_aggregator
+                from news_aggregator import news_aggregator
                 news = news_aggregator.get_news_for_symbol(symbol, limit=10) if news_aggregator else None
                 if news:
                     news_texts = [f"{article.title} {article.description}" for article in news]
@@ -3982,7 +3982,7 @@ class EnhancedPredictionSystem:
             # Signal logic: Higher volatility = more conservative, need stronger signals
             # Get base confidence from source historical performance or market conditions
             try:
-                from .market_constants import market_constants
+                from market_constants import market_constants
                 base_confidence = market_constants.get_dynamic_confidence_threshold()
             except:
                 base_confidence = 0.5
@@ -4079,7 +4079,7 @@ class EnhancedPredictionSystem:
             
             # Get base confidence from market conditions
             try:
-                from .market_constants import market_constants
+                from market_constants import market_constants
                 base_confidence = market_constants.get_dynamic_confidence_threshold()
             except:
                 base_confidence = 0.5
@@ -5591,7 +5591,7 @@ class SmartMoneyTracker:
         """Analyze smart money flow"""
         try:
             # Get whale data
-            from .whale_wallet_monitor import whale_wallet_monitor
+            from whale_wallet_monitor import whale_wallet_monitor
             whale_data = whale_wallet_monitor.get_recent_whale_activity(symbol, hours=24) if whale_wallet_monitor else None
             
             if not isinstance(whale_data, dict):
@@ -5643,7 +5643,7 @@ class CrossAssetCorrelation:
         """Analyze cross-asset correlations - CRYPTO vs FOREX aware"""
         try:
             # Detect asset type to use correct benchmark
-            from .market_constants import market_constants
+            from market_constants import market_constants
             is_forex = market_constants.is_forex_symbol(symbol)
             
             if is_forex:
@@ -5770,7 +5770,7 @@ class NetworkEffectIndicators:
                         self.logger.debug(f"Onchain analyzer failed: {e}")
                 
                 # Fallback: calculate from market data if available
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 market_data = real_market_data_fetcher.fetch_historical_data(symbol, '1d', 30)
                 
                 if market_data and len(market_data) > 1:

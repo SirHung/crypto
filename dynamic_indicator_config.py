@@ -6,7 +6,7 @@ NO HARDCODED VALUES - ALL VALUES BASED ON REAL MARKET CONDITIONS
 """
 
 from typing import Dict, Any, Optional
-from .market_constants import MarketConstants
+from market_constants import MarketConstants
 
 class DynamicIndicatorConfig:
     """

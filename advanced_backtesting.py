@@ -16,18 +16,18 @@ warnings.filterwarnings('ignore')
 
 # Import unified components
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .real_market_data_fetcher import real_market_data_fetcher
+    from real_market_data_fetcher import real_market_data_fetcher
 except ImportError:
     real_market_data_fetcher = None
 
 try:
-    from .ai_integration_manager import ai_integration_manager
+    from ai_integration_manager import ai_integration_manager
 except ImportError:
     ai_integration_manager = None
 

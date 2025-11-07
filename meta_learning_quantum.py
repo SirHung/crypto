@@ -15,7 +15,7 @@ warnings.filterwarnings('ignore')
 
 # Use centralized pandas/numpy bypass
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -23,13 +23,13 @@ import numpy as np
 
 # Import unified components
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .ai_integration_manager import ai_integration_manager
+    from ai_integration_manager import ai_integration_manager
 except ImportError:
     ai_integration_manager = None
 
@@ -459,7 +459,7 @@ class MetaLearningQuantumEngine:
             # Base price (simplified)
             # Get real market price instead of hardcoded value
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 market_data = real_market_data_fetcher.get_market_data("BTC/USDT")
                 base_price = market_data.get('price', 50000.0) if market_data else 50000.0
             except:
@@ -484,7 +484,7 @@ class MetaLearningQuantumEngine:
         try:
             # Get real market price instead of hardcoded value
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 market_data = real_market_data_fetcher.get_market_data("BTC/USDT")
                 base_price = market_data.get('price', 50000.0) if market_data else 50000.0
             except:
@@ -509,7 +509,7 @@ class MetaLearningQuantumEngine:
         try:
             # Get REAL market price for the actual symbol (not hardcoded BTC/USDT)
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 market_data = real_market_data_fetcher.get_market_data(symbol)  # Use actual symbol
                 if not market_data or 'price' not in market_data:
                     # NO FALLBACK - Must have real price

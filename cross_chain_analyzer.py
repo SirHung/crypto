@@ -19,7 +19,7 @@ from enum import Enum
 import asyncio
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging

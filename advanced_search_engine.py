@@ -11,28 +11,28 @@ import warnings
 warnings.filterwarnings('ignore')
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .real_market_data_fetcher import real_market_data_fetcher
+    from real_market_data_fetcher import real_market_data_fetcher
 except ImportError:
     real_market_data_fetcher = None
 
 try:
-    from .kol_influence_tracker import kol_influence_tracker
+    from kol_influence_tracker import kol_influence_tracker
 except ImportError:
     kol_influence_tracker = None
 
 try:
-    from .advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
+    from advanced_nlp_sentiment import advanced_nlp_sentiment as sentiment_analysis_engine
 except ImportError:
     sentiment_analysis_engine = None
 
 try:
-    from .onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
+    from onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
 except ImportError:
     onchain_tokenomics_analyzer = None
 

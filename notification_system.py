@@ -38,7 +38,7 @@ import yaml
 
 # Import unified modules
 try:
-    from .unified_logging_manager import UnifiedLoggingManager
+    from unified_logging_manager import UnifiedLoggingManager
     unified_logger = UnifiedLoggingManager.get_logger("core.notification_system")
 except ImportError:
     import logging
@@ -46,19 +46,19 @@ except ImportError:
     unified_logger.setLevel(logging.INFO)
 
 try:
-    from .unified_config import UnifiedConfig
+    from unified_config import UnifiedConfig
     dynamic_config = UnifiedConfig()
 except ImportError:
-        from .unified_config import UnifiedConfig
+        from unified_config import UnifiedConfig
         dynamic_config = UnifiedConfig()
 
 try:
-    from .meta_ai_content_generator import meta_ai_content
+    from meta_ai_content_generator import meta_ai_content
 except ImportError:
     meta_ai_content = None
 
 try:
-    from .shap_explainer import shap_explainer
+    from shap_explainer import shap_explainer
 except ImportError:
     shap_explainer = None
 
@@ -429,7 +429,7 @@ Action Required: {action_required}
         'production.strict' is enabled, a RuntimeError will be raised.
         """
         try:
-            from .unified_config import unified_config as _uc
+            from unified_config import unified_config as _uc
         except Exception:
             try:
                 from unified_config import unified_config as _uc
@@ -605,7 +605,7 @@ Action Required: {action_required}
         try:
             # Respect production.strict from unified_config if available
             try:
-                from .unified_config import unified_config as _uc
+                from unified_config import unified_config as _uc
             except Exception:
                 try:
                     from unified_config import unified_config as _uc
@@ -1051,7 +1051,7 @@ Action Required: {action_required}
             bridge_url = browser_cfg.get('bridge_url')
             if not bridge_url:
                 # If in enforced production mode, raise a clear error
-                from .unified_config import unified_config
+                from unified_config import unified_config
                 if bool(unified_config.get('production.enforce_adapters', True)):
                     self._update_stats(NotificationChannel.BROWSER, False)
                     raise RuntimeError('Browser notification bridge not configured while production.enforce_adapters is True')

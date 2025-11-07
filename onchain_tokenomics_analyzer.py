@@ -32,7 +32,7 @@ warnings.filterwarnings('ignore')
 
 # Import unified components
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
@@ -529,7 +529,7 @@ class OnchainTokenomicsAnalyzer:
     async def _calculate_onchain_from_market_data(self, symbol: str) -> Dict[str, Any]:
         """Calculate on-chain metrics from real market data when Glassnode unavailable"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_current_price(symbol)
             if not market_data or market_data.get('price', 0) == 0:
@@ -814,7 +814,7 @@ class OnchainTokenomicsAnalyzer:
         """Get whale movement data with REAL market data - NO SIMULATION"""
         try:
             # Use real whale activity data from market data fetcher
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             # Get REAL whale activity data
             whale_data = real_market_data_fetcher.get_whale_activity_real(symbol)
@@ -862,7 +862,7 @@ class OnchainTokenomicsAnalyzer:
             whale_data = self.get_whale_movements(symbol)
             
             # Enhance with additional whale activity indicators
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             # Get current market data for enhanced analysis
             current_data = real_market_data_fetcher.get_current_price(symbol)
@@ -917,7 +917,7 @@ class OnchainTokenomicsAnalyzer:
     def get_exchange_flows(self, symbol: str) -> Dict[str, Any]:
         """Get exchange flow data with enhanced real market analysis"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             # Get current market data
             current_data = real_market_data_fetcher.get_current_price(symbol)
@@ -1021,7 +1021,7 @@ class OnchainTokenomicsAnalyzer:
     def get_network_metrics(self, symbol: str) -> Dict[str, Any]:
         """Get network metrics with real blockchain data analysis"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             # Get current market data
             current_data = real_market_data_fetcher.get_current_price(symbol)
@@ -1147,7 +1147,7 @@ class OnchainTokenomicsAnalyzer:
         """Calculate MVRV ratio using real market data estimation"""
         try:
             # Use market cap and estimated realized value
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
             if market_data and market_data.get('price', 0) > 0:
@@ -1170,7 +1170,7 @@ class OnchainTokenomicsAnalyzer:
     def _calculate_nvt(self, symbol: str) -> float:
         """Calculate NVT ratio using real transaction volume data"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
             if market_data and market_data.get('price', 0) > 0:
@@ -1191,7 +1191,7 @@ class OnchainTokenomicsAnalyzer:
     def _get_active_addresses(self, symbol: str) -> int:
         """Estimate active addresses from trading volume"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
             if market_data and market_data.get('volume', 0) > 0:
@@ -1206,7 +1206,7 @@ class OnchainTokenomicsAnalyzer:
     def _get_transaction_count(self, symbol: str) -> int:
         """Estimate transaction count from volume"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
             if market_data and market_data.get('volume', 0) > 0:
@@ -1222,7 +1222,7 @@ class OnchainTokenomicsAnalyzer:
         """Estimate hash rate for POW coins"""
         try:
             # Hash rate estimation based on market cap for POW coins
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             if symbol not in ['BTC', 'LTC', 'BCH', 'DOGE', 'ZEC']:
                 return 0.0  # Only for POW coins
@@ -1262,7 +1262,7 @@ class OnchainTokenomicsAnalyzer:
     def _get_tvl(self, symbol: str) -> float:
         """Get TVL estimate from market data"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
             if market_data and market_data.get('volume', 0) > 0:
@@ -1300,7 +1300,7 @@ class OnchainTokenomicsAnalyzer:
     def _get_circulating_supply(self, symbol: str) -> float:
         """Get circulating supply from CoinGecko"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             market_data = real_market_data_fetcher.get_market_data(f"{symbol}/USDT" if '/' not in symbol else symbol)
             if market_data and market_data.get('price', 0) > 0:
@@ -1354,7 +1354,7 @@ class OnchainTokenomicsAnalyzer:
         """Analyze on-chain metrics for a cryptocurrency"""
         try:
             # Get basic on-chain data with real market integration
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             market_data = real_market_data_fetcher.get_current_price(symbol)
             
             # Calculate basic on-chain metrics

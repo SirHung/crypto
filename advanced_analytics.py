@@ -30,7 +30,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -40,7 +40,7 @@ from sklearn.cluster import KMeans
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.stats import norm
 
-from .unified_logging_manager import unified_logging
+from unified_logging_manager import unified_logging
 
 
 

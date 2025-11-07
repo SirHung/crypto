@@ -13,18 +13,18 @@ import warnings
 warnings.filterwarnings('ignore')
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .market_constants import market_constants
+    from market_constants import market_constants
 except ImportError:
     market_constants = None
 
 try:
-    from .unified_config import unified_config
+    from unified_config import unified_config
 except ImportError:
     unified_config = None
 
@@ -213,7 +213,7 @@ class AdvancedOptimizer:
             
             # 1. Preload market data
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 for symbol in symbols:
                     try:
                         data = real_market_data_fetcher.get_historical_data(symbol, '1h', 100)
@@ -229,7 +229,7 @@ class AdvancedOptimizer:
             
             # 2. Preload technical indicators
             try:
-                from .unified_technical_indicators import unified_technical_indicators
+                from unified_technical_indicators import unified_technical_indicators
                 # Just importing warms up the indicator cache
                 stats['indicators_preloaded'] = 1
                 self.unified_logger.info("✅ Technical indicators cache warmed up")
@@ -238,7 +238,7 @@ class AdvancedOptimizer:
             
             # 3. Preload AI models
             try:
-                from .ai_training_engine import ai_training_engine
+                from ai_training_engine import ai_training_engine
                 # Check if models are initialized
                 if hasattr(ai_training_engine, 'ai_models'):
                     stats['models_preloaded'] = len(ai_training_engine.ai_models)
@@ -333,7 +333,7 @@ class AdvancedOptimizer:
             
             # Apply settings to parallel_executor if available
             try:
-                from .parallel_executor import parallel_executor
+                from parallel_executor import parallel_executor
                 if parallel_executor:
                     parallel_executor.max_thread_workers = thread_workers
                     if not threads_only:
@@ -448,14 +448,14 @@ class AdvancedOptimizer:
             
             # Apply settings to modules
             try:
-                from .ai_training_engine import ai_training_engine
+                from ai_training_engine import ai_training_engine
                 if hasattr(ai_training_engine, '_feature_cache_max_size'):
                     ai_training_engine._feature_cache_max_size = feature_cache_size
             except Exception:
                 pass
             
             try:
-                from .unified_technical_indicators import unified_technical_indicators
+                from unified_technical_indicators import unified_technical_indicators
                 if hasattr(unified_technical_indicators, 'cache_ttl'):
                     unified_technical_indicators.cache_ttl = indicator_cache_ttl
             except Exception:
@@ -512,7 +512,7 @@ class AdvancedOptimizer:
             Dict with symbol -> data mapping
         """
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             results = {}
             start_time = time.time()

@@ -15,7 +15,7 @@ UNIFIED TECHNICAL INDICATORS CAPABILITIES:
 
 # Import pandas and numpy through bypass to avoid _pyrepl issues
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -45,7 +45,7 @@ from functools import lru_cache
 
 # Import advanced performance optimizer  
 try:
-    from .intelligent_resource_manager import intelligent_resource_manager
+    from intelligent_resource_manager import intelligent_resource_manager
 except ImportError:
     # Fallback for standalone usage
     intelligent_resource_manager = None
@@ -56,7 +56,7 @@ except ImportError:
 
 # Import unified config
 try:
-    from .unified_config import UnifiedConfig
+    from unified_config import UnifiedConfig
     dynamic_config = UnifiedConfig()
 except ImportError:
     # Fallback for standalone usage
@@ -64,7 +64,7 @@ except ImportError:
 
 # Import dynamic indicator configuration (NO HARDCODED VALUES)
 try:
-    from .dynamic_indicator_config import dynamic_indicator_config
+    from dynamic_indicator_config import dynamic_indicator_config
 except ImportError:
     # Fallback: create minimal config
     class MinimalDynamicConfig:
@@ -157,7 +157,7 @@ class UnifiedTechnicalIndicators:
                     rsi = talib.RSI(prices, timeperiod=period)
                     # Fill NaN values with dynamic default
                     if np.any(np.isnan(rsi)):
-                        from .market_constants import market_constants
+                        from market_constants import market_constants
                         default_rsi = market_constants.get_dynamic_default_rsi()
                         rsi = np.nan_to_num(rsi, nan=default_rsi)
                     return rsi
@@ -196,7 +196,7 @@ class UnifiedTechnicalIndicators:
         except Exception as e:
             unified_logger.error(f"RSI calculation error: {e}")
             # Return dynamic default on error
-            from .market_constants import market_constants
+            from market_constants import market_constants
             default_rsi = market_constants.get_dynamic_default_rsi()
             return np.full(len(prices) if hasattr(prices, '__len__') else 1, default_rsi, dtype=float)
     
@@ -5401,7 +5401,7 @@ class UnifiedTechnicalIndicators:
     def _calculate_psar(self, data: pd.DataFrame) -> Dict[str, Any]:
         """Calculate Parabolic SAR with dynamic parameters"""
         try:
-            from .market_constants import market_constants
+            from market_constants import market_constants
             acceleration = market_constants.get_dynamic_psar_acceleration() if market_constants else 0.02
             maximum = market_constants.get_dynamic_psar_maximum() if market_constants else 0.2
         except Exception:

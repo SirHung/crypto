@@ -28,13 +28,13 @@ import requests
 
 # Import unified components
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 # Import MarketData from unified_data_structures
-from .unified_data_structures import MarketData
+from unified_data_structures import MarketData
 
 class RealMarketDataFetcher:
     """Advanced real-time market data fetcher for God Mode 1000"""
@@ -74,7 +74,7 @@ class RealMarketDataFetcher:
 
             # OPTIMIZED: Get optimal workers from parallel_executor if available
             try:
-                from .parallel_executor import parallel_executor
+                from parallel_executor import parallel_executor
                 # Use thread workers for I/O-bound exchange API calls
                 max_workers = parallel_executor.get_optimal_workers('io')
                 unified_logging.info(f"📊 Using parallel_executor optimal workers: {max_workers}")
@@ -803,7 +803,7 @@ class RealMarketDataFetcher:
         if not hasattr(self, '_executor') or self._executor is None:
             # DYNAMIC: Get optimal workers from parallel_executor
             try:
-                from .parallel_executor import parallel_executor
+                from parallel_executor import parallel_executor
                 max_workers = parallel_executor.get_optimal_workers('io')
             except ImportError:
                 # Fallback: Use CPU count for I/O-bound tasks
@@ -1121,7 +1121,7 @@ class RealMarketDataFetcher:
                     price_data = self.get_current_price(symbol, exchange)
                     if price_data and price_data.get('price', 0) > 0:
                         # Detect asset type based on symbol
-                        from .market_constants import market_constants
+                        from market_constants import market_constants
                         asset_type = 'forex' if market_constants.is_forex_symbol(symbol) else 'crypto'
                         
                         result = {

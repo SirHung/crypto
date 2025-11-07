@@ -11,25 +11,25 @@ from datetime import datetime, timezone, timedelta
 from enum import Enum
 
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
 import numpy as np
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 try:
-    from .real_market_data_fetcher import real_market_data_fetcher
+    from real_market_data_fetcher import real_market_data_fetcher
 except ImportError:
     real_market_data_fetcher = None
 
 try:
-    from .portfolio_manager import portfolio_manager
+    from portfolio_manager import portfolio_manager
 except ImportError:
     portfolio_manager = None
 
@@ -407,7 +407,7 @@ class PortfolioVisualizer:
     def _get_price_history(self, symbol: str, days: int = 30) -> List[float]:
         """Get price history for correlation calculation"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             
             historical_data = real_market_data_fetcher.get_ohlcv(
                 symbol=symbol,

@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from enum import Enum
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging
@@ -194,7 +194,7 @@ class ArbitrageBot:
             
             for symbol in symbols:
                 # Fetch REAL prices from multiple exchanges - NO SIMULATION
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 
                 exchange_prices = {}
                 for exchange in self.exchanges:
@@ -232,12 +232,12 @@ class ArbitrageBot:
             # Execute REAL trades - NO SIMULATION
             # 1. Buy on cheaper exchange
             # 2. Sell on expensive exchange
-            from .real_trading_execution import real_trading_execution
+            from real_trading_execution import real_trading_execution
             
             # Calculate expected slippage from order book - NO HARDCODE
             estimated_slippage = 0.0
             try:
-                from .order_book_analyzer import order_book_analyzer
+                from order_book_analyzer import order_book_analyzer
                 buy_book = order_book_analyzer.get_order_book(opportunity.symbol, opportunity.buy_exchange)
                 sell_book = order_book_analyzer.get_order_book(opportunity.symbol, opportunity.sell_exchange)
                 

@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Dict, Any, List
 import requests
 import time
-from .unified_config import UnifiedConfig
+from unified_config import UnifiedConfig
 
 # Get dynamic config instance
 _config = UnifiedConfig()
@@ -228,7 +228,7 @@ class MarketConstants:
         
         # Calculate from market data as last resort
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             btc_data = real_market_data_fetcher.get_market_data('BTC/USDT')
             eth_data = real_market_data_fetcher.get_market_data('ETH/USDT')
             if btc_data and eth_data:
@@ -262,7 +262,7 @@ class MarketConstants:
         """Get current BTC price - CENTRALIZED (NO DUPLICATE CODE)"""
         try:
             # Use centralized real_market_data_fetcher - NO DUPLICATE CODE
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             btc_data = real_market_data_fetcher.get_market_data('BTC/USDT')
             if btc_data and 'price' in btc_data:
                 price = float(btc_data['price'])
@@ -276,7 +276,7 @@ class MarketConstants:
         """Get current ETH price - CENTRALIZED (NO DUPLICATE CODE)"""
         try:
             # Use centralized real_market_data_fetcher - NO DUPLICATE CODE
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             eth_data = real_market_data_fetcher.get_market_data('ETH/USDT')
             if eth_data and 'price' in eth_data:
                 price = float(eth_data['price'])
@@ -322,7 +322,7 @@ class MarketConstants:
         # Alternative: Calculate from DeFi stablecoin yields
         try:
             # USDC/USDT average lending rate as proxy for risk-free rate
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             # Get market volatility as indicator
             btc_data = real_market_data_fetcher.get_market_data('BTC/USDT')
             if btc_data:
@@ -376,7 +376,7 @@ class MarketConstants:
         """Get dynamic volatility estimate for market making"""
         try:
             # Calculate from recent BTC price movements
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             hist_data = real_market_data_fetcher.get_historical_data('BTC/USDT', '1h', limit=24)
             
             if hist_data and len(hist_data) > 1:
@@ -447,7 +447,7 @@ class MarketConstants:
         except Exception:
             # Calculate from average coin market cap if total cap unavailable
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 top_coins = real_market_data_fetcher.get_top_coins_by_volume(limit=10)
                 if top_coins and len(top_coins) > 0:
                     avg_volume = sum(c.get('volume_24h', 0) for c in top_coins) / len(top_coins)
@@ -477,7 +477,7 @@ class MarketConstants:
         except Exception:
             # Calculate from typical trade sizes
             try:
-                from .real_market_data_fetcher import real_market_data_fetcher
+                from real_market_data_fetcher import real_market_data_fetcher
                 btc_data = real_market_data_fetcher.get_market_data('BTC/USDT')
                 if btc_data:
                     price = float(btc_data.get('price', 0))
@@ -613,7 +613,7 @@ class MarketConstants:
         """Get market trend from real market data"""
         try:
             # Get BTC price history as proxy for market trend
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             historical = real_market_data_fetcher.get_historical_data('BTC/USDT', '1h', 24)
             if historical and len(historical) >= 2:
                 first_price = historical[0].get('close', 0)
@@ -630,7 +630,7 @@ class MarketConstants:
         """Get market momentum from real market data"""
         try:
             # Get BTC volume changes as proxy for momentum
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             historical = real_market_data_fetcher.get_historical_data('BTC/USDT', '1h', 24)
             if historical and len(historical) >= 12:
                 recent_volume = sum([h.get('volume', 0) for h in historical[-6:]])
@@ -754,7 +754,7 @@ class MarketConstants:
                 # Calculate from market regime
                 # Use dynamic thresholds if available
                 try:
-                    from .dynamic_thresholds import dynamic_thresholds
+                    from dynamic_thresholds import dynamic_thresholds
                     if dynamic_thresholds:
                         base_confidence = dynamic_thresholds.get_confidence_threshold()
                     else:
@@ -985,7 +985,7 @@ class MarketConstants:
                 return min_size
             
             # Fallback: get from market data fetcher
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             market_data = real_market_data_fetcher.get_market_data('BTC/USDT')
             if market_data and 'volume' in market_data:
                 volume = float(market_data['volume'])
@@ -1007,7 +1007,7 @@ class MarketConstants:
                 return max_size
             
             # Fallback: get from market data fetcher
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             market_data = real_market_data_fetcher.get_market_data('BTC/USDT')
             if market_data and 'volume' in market_data:
                 volume = float(market_data['volume'])
@@ -1077,7 +1077,7 @@ class MarketConstants:
         """Get current market volatility (0.0 to 1.0)"""
         try:
             # Try to get real volatility from market data
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             btc_data = real_market_data_fetcher.get_market_data('BTC/USDT')
             if btc_data and 'high_24h' in btc_data and 'low_24h' in btc_data:
                 high = float(btc_data['high_24h'])
@@ -1323,7 +1323,7 @@ class MarketConstants:
         """Get REAL current Fear & Greed Index - CENTRALIZED (NO DUPLICATE CODE)"""
         try:
             # Use centralized real_market_data_fetcher with caching - NO DUPLICATE CODE
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             fng_data = real_market_data_fetcher.get_fear_greed_index()
             value = fng_data.get('value', 50)
             
@@ -1471,7 +1471,7 @@ class MarketConstants:
     def get_supported_timeframes(cls) -> List[str]:
         """Get supported timeframes from real exchange API"""
         try:
-            from .real_market_data_fetcher import real_market_data_fetcher
+            from real_market_data_fetcher import real_market_data_fetcher
             if hasattr(real_market_data_fetcher, 'exchanges') and real_market_data_fetcher.exchanges:
                 # Get timeframes from first available exchange
                 for exchange_name, exchange in real_market_data_fetcher.exchanges.items():

@@ -12,7 +12,7 @@ from enum import Enum
 import statistics
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging
@@ -53,7 +53,7 @@ class TraderProfile:
 @dataclass
 # CONSOLIDATED: Import TradingSignal from unified_data_structures
 # Using unified version for consistency across all modules
-from .unified_data_structures import TradingSignal as UnifiedTradingSignal
+from unified_data_structures import TradingSignal as UnifiedTradingSignal
 
 # Alias for backward compatibility in this module
 TradingSignal = UnifiedTradingSignal

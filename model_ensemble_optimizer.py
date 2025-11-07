@@ -12,14 +12,14 @@ import asyncio
 
 # Use centralized pandas/numpy bypass
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
 import numpy as np
 
-from .unified_logging_manager import unified_logging
-from .dynamic_thresholds import dynamic_thresholds
+from unified_logging_manager import unified_logging
+from dynamic_thresholds import dynamic_thresholds
 
 class OptimizationMethod(Enum):
     DYNAMIC_WEIGHT = "dynamic_weight"

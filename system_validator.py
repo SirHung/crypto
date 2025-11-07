@@ -11,14 +11,14 @@ from datetime import datetime, timezone
 import time
 
 try:
-    from .unified_logging_manager import unified_logging
+    from unified_logging_manager import unified_logging
 except ImportError:
     import logging
     unified_logging = logging.getLogger(__name__)
 
 # Use centralized pandas/numpy bypass
 try:
-    from . import python313_compatibility
+    import python313_compatibility
 except ImportError:
     pass
 
@@ -140,7 +140,7 @@ class SystemValidator:
     def _validate_gpu_availability(self) -> ValidationResult:
         """Check GPU availability and configuration"""
         try:
-            from .gpu_accelerator import GPUAccelerator, GPU_AVAILABLE
+            from gpu_accelerator import GPUAccelerator, GPU_AVAILABLE
             
             details = {
                 'gpu_available': GPU_AVAILABLE,
@@ -186,7 +186,7 @@ class SystemValidator:
     def _validate_multi_threading(self) -> ValidationResult:
         """Validate multi-threading configuration"""
         try:
-            from .parallel_executor import parallel_executor
+            from parallel_executor import parallel_executor
             import psutil
             
             cpu_count = psutil.cpu_count(logical=True)
@@ -231,8 +231,8 @@ class SystemValidator:
     def _validate_gpu_threading_sync(self) -> ValidationResult:
         """Validate GPU and threading work together without conflicts"""
         try:
-            from .parallel_executor import parallel_executor
-            from .gpu_accelerator import GPUAccelerator, GPU_AVAILABLE
+            from parallel_executor import parallel_executor
+            from gpu_accelerator import GPUAccelerator, GPU_AVAILABLE
             
             details = {
                 'gpu_available': GPU_AVAILABLE,
@@ -287,7 +287,7 @@ class SystemValidator:
     def _validate_ai_models_pipeline(self) -> ValidationResult:
         """Validate 9 AI models training pipeline"""
         try:
-            from .ai_training_engine import AITrainingEngine, AIModelType
+            from ai_training_engine import AITrainingEngine, AIModelType
             
             # Check all 9 model types are defined
             model_types = [
@@ -338,7 +338,7 @@ class SystemValidator:
     def _validate_crypto_forex_logic(self) -> ValidationResult:
         """Validate Crypto/Forex terminology and logic"""
         try:
-            from .market_terminology import MarketTerminologyHandler, MarketType, OrderSide
+            from market_terminology import MarketTerminologyHandler, MarketType, OrderSide
             
             # Test crypto detection
             btc_type = MarketTerminologyHandler.detect_market_type("BTC/USDT")
@@ -421,7 +421,7 @@ class SystemValidator:
     def _validate_prediction_system(self) -> ValidationResult:
         """Validate prediction system integrity"""
         try:
-            from .enhanced_prediction_system import EnhancedPredictionSystem
+            from enhanced_prediction_system import EnhancedPredictionSystem
             
             details = {
                 'system_initialized': False,
@@ -464,7 +464,7 @@ class SystemValidator:
     def _validate_data_quality_system(self) -> ValidationResult:
         """Validate data quality system"""
         try:
-            from .training_quality_controller import TrainingQualityController
+            from training_quality_controller import TrainingQualityController
             
             details = {
                 'quality_controller_initialized': False,
@@ -507,7 +507,7 @@ class SystemValidator:
     def _validate_cache_system(self) -> ValidationResult:
         """Validate cache system"""
         try:
-            from .unified_cache_manager import unified_cache_manager
+            from unified_cache_manager import unified_cache_manager
             
             details = {
                 'cache_manager_initialized': unified_cache_manager is not None,

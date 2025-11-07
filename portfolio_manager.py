@@ -22,7 +22,7 @@ import time
 import json
 # Import centralized pandas/numpy bypass to eliminate duplicates
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
@@ -38,10 +38,10 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import unified modules - NO FALLBACK/BYPASS
-from .unified_logging_manager import unified_logging
-from .unified_config import UnifiedConfig
-from .unified_data_structures import Position, Trade, PortfolioSummary, PositionSide, PositionAction
-from .unified_cache_manager import unified_cache
+from unified_logging_manager import unified_logging
+from unified_config import UnifiedConfig
+from unified_data_structures import Position, Trade, PortfolioSummary, PositionSide, PositionAction
+from unified_cache_manager import unified_cache
 
 dynamic_config = UnifiedConfig()
 
@@ -513,7 +513,7 @@ class AdvancedPortfolioManager:
                                 if hasattr(self, 'market_data_fetcher') and self.market_data_fetcher is not None:
                                     current_price = self.market_data_fetcher.get_current_price(symbol)
                                 elif 'real_market_data_fetcher' in globals():
-                                    from .real_market_data_fetcher import RealMarketDataFetcher
+                                    from real_market_data_fetcher import RealMarketDataFetcher
                                     current_price = RealMarketDataFetcher().get_current_price(symbol)
                             
                                 if current_price is None:

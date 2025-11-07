@@ -10,13 +10,13 @@ from datetime import datetime
 from enum import Enum
 
 # Fix Python 3.13 compatibility first
-from . import python313_compatibility
+import python313_compatibility
 
 # Import real libraries - NO BYPASS/FALLBACK
 import pandas as pd
 import numpy as np
 
-from .unified_logging_manager import unified_logging
+from unified_logging_manager import unified_logging
 
 
 
@@ -221,8 +221,8 @@ class ReinforcementLearningEngine:
             self.unified_logger.info(f"Training RL agent for {symbol} - {episodes} episodes")
             
             # Fetch real historical data
-            from .real_market_data_fetcher import real_market_data_fetcher
-            from .unified_technical_indicators import unified_technical_indicators
+            from real_market_data_fetcher import real_market_data_fetcher
+            from unified_technical_indicators import unified_technical_indicators
             
             hist_data = real_market_data_fetcher.get_historical_data(symbol, '1h', 1000)
             if not hist_data or len(hist_data) < 100:

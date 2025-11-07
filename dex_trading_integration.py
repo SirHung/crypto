@@ -8,7 +8,7 @@ from typing import Dict, List, Optional
 from datetime import datetime
 from enum import Enum
 
-from .unified_logging_manager import UnifiedLoggingManager
+from unified_logging_manager import UnifiedLoggingManager
 
 
 class DEXProtocol(Enum):
@@ -71,7 +71,7 @@ class DEXTradingIntegration:
         """Get list of supported tokens from real market - NO HARDCODE"""
         try:
             # Import market constants for real token list
-            from .market_constants import market_constants
+            from market_constants import market_constants
             
             # Get top tokens by market cap
             top_symbols = market_constants.get_default_symbols()
