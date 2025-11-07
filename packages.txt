@@ -1,4 +1,2 @@
-build-essential
-python3-dev
-libta-lib0-dev
-ta-lib
+# System packages for Streamlit Cloud
+# Minimal requirements only
