@@ -63,108 +63,108 @@ import pandas as pd
 import numpy as np
 
 # Import core modules - Professional Grade Architecture
-from core.unified_logging_manager import unified_logging
-from core.unified_config import unified_config
-from core.market_constants import market_constants
-from core.real_market_data_fetcher import real_market_data_fetcher
-from core.ai_integration_manager import ai_integration_manager
-from core.advanced_trading_bot import advanced_trading_bot, BotConfig, TradingStrategy
-from core.advanced_backtesting import advanced_backtesting_engine, BacktestConfig
-from core.advanced_trading_strategies import advanced_trading_strategies
-from core.onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
-from core.regime_detection import regime_detection_engine
-from core.meta_learning_quantum import meta_learning_quantum_engine
-from core.ai_self_correction import AISelfCorrectionEngine
-from core.ai_training_engine import ai_training_engine
-from core.airdrop_manager import airdrop_manager
+from unified_logging_manager import unified_logging
+from unified_config import unified_config
+from market_constants import market_constants
+from real_market_data_fetcher import real_market_data_fetcher
+from ai_integration_manager import ai_integration_manager
+from advanced_trading_bot import advanced_trading_bot, BotConfig, TradingStrategy
+from advanced_backtesting import advanced_backtesting_engine, BacktestConfig
+from advanced_trading_strategies import advanced_trading_strategies
+from onchain_tokenomics_analyzer import onchain_tokenomics_analyzer
+from regime_detection import regime_detection_engine
+from meta_learning_quantum import meta_learning_quantum_engine
+from ai_self_correction import AISelfCorrectionEngine
+from ai_training_engine import ai_training_engine
+from airdrop_manager import airdrop_manager
 # performance_optimizer merged into intelligent_resource_manager and advanced_optimizer
-from core.portfolio_manager import portfolio_manager
-from core.notification_system import notification_system
-from core.enhanced_prediction_system import market_microstructure
-from core.unified_technical_indicators import unified_technical_indicators
-from core.unified_cache_manager import unified_cache_manager
-from core.advanced_optimizer import advanced_optimizer
+from portfolio_manager import portfolio_manager
+from notification_system import notification_system
+from enhanced_prediction_system import market_microstructure
+from unified_technical_indicators import unified_technical_indicators
+from unified_cache_manager import unified_cache_manager
+from advanced_optimizer import advanced_optimizer
 # batch_processor merged into parallel_executor
-from core.parallel_executor import parallel_executor
-# system_health_manager + system_warmup merged into intelligent_resource_manager  
-from core.intelligent_resource_manager import intelligent_resource_manager
-from core.whale_wallet_monitor import whale_wallet_monitor
+from parallel_executor import parallel_executor
+# system_health_manager + system_warmup merged into intelligent_resource_manager
+from intelligent_resource_manager import intelligent_resource_manager
+from whale_wallet_monitor import whale_wallet_monitor
 
 # NEW MODULES - ULTRA ADVANCED UPGRADES
-from core.kol_influence_tracker import kol_influence_tracker
-from core.enhanced_prediction_system import enhanced_prediction_system
-from core.advanced_chart_generator import advanced_chart_generator
-from core.smart_alert_system import smart_alert_system, AlertCondition, AlertPriority
-from core.advanced_search_engine import advanced_search_engine
+from kol_influence_tracker import kol_influence_tracker
+from enhanced_prediction_system import enhanced_prediction_system
+from advanced_chart_generator import advanced_chart_generator
+from smart_alert_system import smart_alert_system, AlertCondition, AlertPriority
+from advanced_search_engine import advanced_search_engine
 
 # GOD MODE 1000 - NEWLY ADDED MODULES (Complete System)
-from core.portfolio_visualizer import portfolio_visualizer
-from core.dca_bot import dca_bot, DCAConfig, DCAFrequency, DCAStrategy
-from core.funding_rate_tracker import funding_rate_tracker
-from core.order_book_analyzer import order_book_analyzer
-from core.news_aggregator import news_aggregator
-from core.pattern_recognition import pattern_recognition
-from core.forex_market_data_fetcher import forex_market_data_fetcher
-from core.multi_timeframe_analyzer import multi_timeframe_analyzer
+from portfolio_visualizer import portfolio_visualizer
+from dca_bot import dca_bot, DCAConfig, DCAFrequency, DCAStrategy
+from funding_rate_tracker import funding_rate_tracker
+from order_book_analyzer import order_book_analyzer
+from news_aggregator import news_aggregator
+from pattern_recognition import pattern_recognition
+from forex_market_data_fetcher import forex_market_data_fetcher
+from multi_timeframe_analyzer import multi_timeframe_analyzer
 
 # GOD MODE 1000 - AUTHENTICATION & SECURITY
-from core.authentication_manager import authentication_manager, Permission
+from authentication_manager import authentication_manager, Permission
 
 # GOD MODE 2000 - ADVANCED FEATURES
-from core.risk_management import risk_management, RiskMetrics, PositionSize
-from core.advanced_analytics import advanced_analytics, CorrelationAnalysis, ClusterResult, MonteCarloResult
-from core.tax_calculator import tax_calculator, TaxReport, TaxMethod, TransactionType
-from core.social_trading import social_trading, TraderProfile, TradingSignal, TraderTier
-from core.blockchain_integration import blockchain_integration, BlockchainNetwork, DeFiPosition
+from risk_management import risk_management, RiskMetrics, PositionSize
+from advanced_analytics import advanced_analytics, CorrelationAnalysis, ClusterResult, MonteCarloResult
+from tax_calculator import tax_calculator, TaxReport, TaxMethod, TransactionType
+from social_trading import social_trading, TraderProfile, TradingSignal, TraderTier
+from blockchain_integration import blockchain_integration, BlockchainNetwork, DeFiPosition
 
 # GOD MODE 10000 - ULTRA ADVANCED AI & TRADING
-from core.reinforcement_learning import reinforcement_learning
-from core.arbitrage_bot import arbitrage_bot, ArbitrageOpportunity, ArbitrageType
-from core.market_making_bot import market_making_bot, MarketMakingOrder
-from core.advanced_nlp_sentiment import advanced_nlp_sentiment, SentimentAnalysis
-from core.strategy_optimizer import strategy_optimizer, OptimizationResult, ParameterRange
-from core.market_making_optimizer import  MarketMakingOptimizer
-from core.latency_arbitrage_detector import LatencyArbitrageDetector
-from core.model_ensemble_optimizer import ModelEnsembleOptimizer
+from reinforcement_learning import reinforcement_learning
+from arbitrage_bot import arbitrage_bot, ArbitrageOpportunity, ArbitrageType
+from market_making_bot import market_making_bot, MarketMakingOrder
+from advanced_nlp_sentiment import advanced_nlp_sentiment, SentimentAnalysis
+from strategy_optimizer import strategy_optimizer, OptimizationResult, ParameterRange
+from market_making_optimizer import  MarketMakingOptimizer
+from latency_arbitrage_detector import LatencyArbitrageDetector
+from model_ensemble_optimizer import ModelEnsembleOptimizer
 
 # GOD MODE 10000 - NEW ADVANCED MODULES
-from core.contract_auditor import contract_auditor, ContractAuditResult, RiskLevel
-from core.mev_detector import mev_detector, MEVOpportunity, MEVType
-from core.flash_loan_arbitrage import flash_loan_arbitrage, FlashLoanOpportunity
-from core.cross_chain_analyzer import cross_chain_analyzer, Chain, CrossChainArbitrage
-from core.nft_analytics import nft_analytics, NFTCollection, NFTSignal
-from core.derivatives_advanced import derivatives_advanced, OptionType
-from core.hft_engine import hft_engine, HFTSignal
-from core.gpu_accelerator import gpu_accelerator
+from contract_auditor import contract_auditor, ContractAuditResult, RiskLevel
+from mev_detector import mev_detector, MEVOpportunity, MEVType
+from flash_loan_arbitrage import flash_loan_arbitrage, FlashLoanOpportunity
+from cross_chain_analyzer import cross_chain_analyzer, Chain, CrossChainArbitrage
+from nft_analytics import nft_analytics, NFTCollection, NFTSignal
+from derivatives_advanced import derivatives_advanced, OptionType
+from hft_engine import hft_engine, HFTSignal
+from gpu_accelerator import gpu_accelerator
 
 # GOD MODE 10000 - CRITICAL MISSING MODULES (NOW INTEGRATED)
 # adaptive_learning_engine merged into online_learning_system
-from core.online_learning_system import online_learning_system, OnlineLearningMetrics
-from core.order_flow_tracker import order_flow_tracker, OrderFlowMetrics
-from core.execution_quality_optimizer import execution_optimizer, ExecutionPlan, ExecutionAlgorithm
-from core.dex_trading_integration import dex_trading_integration, DEXProtocol, DEXTrade
-from core.copy_trading_system import copy_trading_system, CopyTradeConfig
-from core.portfolio_manager import position_manager_advanced, PositionAction  # Merged: position_manager_advanced.py → portfolio_manager.py
-from core.dynamic_risk_adjuster import dynamic_risk_adjuster
-from core.smart_order_types import smart_order_manager, SmartOrder, OrderType
+from online_learning_system import online_learning_system, OnlineLearningMetrics
+from order_flow_tracker import order_flow_tracker, OrderFlowMetrics
+from execution_quality_optimizer import execution_optimizer, ExecutionPlan, ExecutionAlgorithm
+from dex_trading_integration import dex_trading_integration, DEXProtocol, DEXTrade
+from copy_trading_system import copy_trading_system, CopyTradeConfig
+from portfolio_manager import position_manager_advanced, PositionAction  # Merged: position_manager_advanced.py → portfolio_manager.py
+from dynamic_risk_adjuster import dynamic_risk_adjuster
+from smart_order_types import smart_order_manager, SmartOrder, OrderType
 
 # GOD MODE 10000 - ADVANCED SUPPORT MODULES
-from core.unified_cache_manager import feature_store  # Merged: feature_store.py → unified_cache_manager.py
-from core.model_validator import model_validator
-from core.ensemble_validator import EnsembleValidator
+from unified_cache_manager import feature_store  # Merged: feature_store.py → unified_cache_manager.py
+from model_validator import model_validator
+from ensemble_validator import EnsembleValidator
 ensemble_validator = EnsembleValidator()
-from core.data_source_validator import data_source_validator
-from core.transaction_cost_analyzer import transaction_cost_analyzer
-from core.volatility_forecaster import volatility_forecaster
-from core.alternative_data_integrator import alternative_data_integrator
-from core.anomaly_detector import anomaly_detector
-from core.training_quality_controller import training_quality_controller
-from core.multi_strategy_coordinator import multi_strategy_coordinator
-from core.signal_aggregator import signal_aggregator
-from core.dynamic_indicator_config import dynamic_indicator_config
-from core.performance_tracker import performance_tracker
-from core.shap_explainer import shap_explainer
-from core.meta_ai_content_generator import MetaAIContentGenerator
+from data_source_validator import data_source_validator
+from transaction_cost_analyzer import transaction_cost_analyzer
+from volatility_forecaster import volatility_forecaster
+from alternative_data_integrator import alternative_data_integrator
+from anomaly_detector import anomaly_detector
+from training_quality_controller import training_quality_controller
+from multi_strategy_coordinator import multi_strategy_coordinator
+from signal_aggregator import signal_aggregator
+from dynamic_indicator_config import dynamic_indicator_config
+from performance_tracker import performance_tracker
+from shap_explainer import shap_explainer
+from meta_ai_content_generator import MetaAIContentGenerator
 
 class GodMode10000Application:
     """
@@ -239,7 +239,7 @@ class GodMode10000Application:
         self.auth_manager = authentication_manager
         
         # Cache settings for optimal performance - Dynamic from config
-        from core.unified_config import unified_config
+        from unified_config import unified_config
         self.unified_config = unified_config
         self.cache_ttl = self.unified_config.get('data.cache_ttl', 30)
         self.data_refresh_interval = self.unified_config.get('data.update_interval', 5)
@@ -3335,7 +3335,7 @@ class GodMode10000Application:
                     if st.button("▶️ Start Bot", key="start_bot_unified", use_container_width=True):
                         try:
                             # Start actual trading bot with config
-                            from core.advanced_trading_bot import BotConfig, TradingStrategy
+                            from advanced_trading_bot import BotConfig, TradingStrategy
                             
                             strategy_map = {
                                 'Trend Following': TradingStrategy.TREND_FOLLOWING,
@@ -3404,7 +3404,7 @@ class GodMode10000Application:
                 if st.button("⚡ Smart Execute", key="smart_execute", use_container_width=True):
                     try:
                         # Call actual execution optimizer
-                        from core.execution_quality_optimizer import ExecutionAlgorithm
+                        from execution_quality_optimizer import ExecutionAlgorithm
                         
                         algo_map = {
                             'Market': ExecutionAlgorithm.MARKET,
@@ -8192,7 +8192,7 @@ Confidence: {prediction.confidence_score:.1%}
             # ALWAYS show header first
             st.markdown("### 💱 Forex Trading Center")
             
-            from core.forex_market_data_fetcher import forex_market_data_fetcher
+            from forex_market_data_fetcher import forex_market_data_fetcher
             
             st.markdown("### 💱 Forex Trading - Multi-Asset Platform")
             st.markdown("**Trade Forex alongside Crypto with AI-powered unified platform**")
@@ -8400,7 +8400,7 @@ Confidence: {prediction.confidence_score:.1%}
                         st.session_state['saved_email'] = st.session_state.get('settings_email', False)
                         
                         # Also save to unified_config for persistence
-                        from core.unified_config import unified_config
+                        from unified_config import unified_config
                         unified_config.set('exchange', st.session_state.get('settings_exchange', 'Binance'))
                         unified_config.set('trading.max_positions', st.session_state.get('settings_max_positions', 5))
                         unified_config.set('trading.risk_per_trade', st.session_state.get('settings_risk', 1.0) / 100.0)
@@ -9343,7 +9343,7 @@ Confidence: {prediction.confidence_score:.1%}
                         try:
                             # Fetch real market price data
                             import pandas as pd
-                            from core.real_market_data_fetcher import real_market_data_fetcher
+                            from real_market_data_fetcher import real_market_data_fetcher
                             
                             prices_data = {}
                             for symbol in selected:
@@ -9395,7 +9395,7 @@ Confidence: {prediction.confidence_score:.1%}
                         try:
                             import pandas as pd
                             import numpy as np
-                            from core.real_market_data_fetcher import real_market_data_fetcher
+                            from real_market_data_fetcher import real_market_data_fetcher
                             
                             returns_data = {}
                             for symbol in selected:
@@ -9448,7 +9448,7 @@ Confidence: {prediction.confidence_score:.1%}
                     with st.spinner(f"Running {mc_sims} simulations..."):
                         try:
                             import numpy as np
-                            from core.real_market_data_fetcher import real_market_data_fetcher
+                            from real_market_data_fetcher import real_market_data_fetcher
                             
                             # Get current price and historical data
                             market_data = self._get_real_market_data(mc_symbol)
@@ -9500,7 +9500,7 @@ Confidence: {prediction.confidence_score:.1%}
                         try:
                             import pandas as pd
                             import numpy as np
-                            from core.real_market_data_fetcher import real_market_data_fetcher
+                            from real_market_data_fetcher import real_market_data_fetcher
                             
                             returns_data = {}
                             for symbol in selected:
@@ -9822,7 +9822,7 @@ Confidence: {prediction.confidence_score:.1%}
                     risk_limit = st.number_input("Risk Limit ($)", 10, 10000, 100, key="copy_risk_limit")
                 
                 if st.button("💾 Save Copy Trading Settings", type="primary", key="save_copy_trading"):
-                    from core.social_trading import CopyTradingConfig
+                    from social_trading import CopyTradingConfig
                     
                     config = CopyTradingConfig(
                         enabled=copy_enabled,
@@ -9877,7 +9877,7 @@ Confidence: {prediction.confidence_score:.1%}
                 
                 with col2:
                     if st.button("🔗 Connect Wallet", type="primary", key="connect_wallet"):
-                        from core.blockchain_integration import BlockchainNetwork
+                        from blockchain_integration import BlockchainNetwork
                         
                         network_enum = BlockchainNetwork(network)
                         success, msg = blockchain_integration.connect_wallet(
@@ -9904,7 +9904,7 @@ Confidence: {prediction.confidence_score:.1%}
                     st.markdown("##### 💰 Token Balances")
                     
                     if st.button("🔄 Refresh Balances", key="refresh_balances"):
-                        from core.blockchain_integration import BlockchainNetwork
+                        from blockchain_integration import BlockchainNetwork
                         
                         balances = blockchain_integration.get_wallet_balance(
                             st.session_state['connected_wallet'],
@@ -10013,7 +10013,7 @@ Confidence: {prediction.confidence_score:.1%}
                 )
                 
                 if st.button("⛽ Check Gas Prices", key="check_gas"):
-                    from core.blockchain_integration import BlockchainNetwork
+                    from blockchain_integration import BlockchainNetwork
                     
                     gas_prices = blockchain_integration.get_gas_tracker(BlockchainNetwork(network_gas))
                     
@@ -10704,7 +10704,7 @@ Confidence: {prediction.confidence_score:.1%}
                 if st.button("🚀 Start Optimization", type="primary", key="start_optimization"):
                     with st.spinner(f"Running {opt_method}..."):
                         # Define parameter ranges
-                        from core.strategy_optimizer import ParameterRange
+                        from strategy_optimizer import ParameterRange
                         
                         param_ranges = [
                             ParameterRange("sma_fast", sma_fast_min, sma_fast_max, is_integer=True),
@@ -10713,8 +10713,8 @@ Confidence: {prediction.confidence_score:.1%}
                         ]
                         
                         # Real backtest function using market data
-                        from core.advanced_backtesting import advanced_backtesting
-                        from core.real_market_data_fetcher import real_market_data_fetcher
+                        from advanced_backtesting import advanced_backtesting
+                        from real_market_data_fetcher import real_market_data_fetcher
                         
                         selected_symbol = st.session_state.get('selected_symbol', 'BTC/USDT')
                         
