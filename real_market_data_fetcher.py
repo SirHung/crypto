@@ -876,14 +876,18 @@ class RealMarketDataFetcher:
                     unified_logging.warning(f"Failed to fetch historical data from {exchange_name}: {e}")
                     continue
 
-            # NO FALLBACK: If all exchanges fail, return empty list
-            # User requirement: Only real exchange data, no yfinance/free API fallbacks
-            unified_logging.error(f"❌ CRITICAL: All exchanges failed for {symbol} {timeframe} historical data. Returning empty list.")
-            return []
+            # RAISE EXCEPTION: If all exchanges fail, raise error for immediate debugging
+            # User requirement: Don't return 0, raise exception to fix directly
+            error_msg = f"❌ CRITICAL: All {len(self.exchanges)} exchanges failed for {symbol} {timeframe} historical data. Check exchange connectivity!"
+            unified_logging.error(error_msg)
+            raise RuntimeError(error_msg)
             
+        except RuntimeError:
+            # Re-raise RuntimeError (already logged)
+            raise
         except Exception as e:
             unified_logging.error(f"Failed to get historical data: {e}", exception=e)
-            return []
+            raise RuntimeError(f"Failed to fetch historical data for {symbol} {timeframe}: {e}")
     
     def _fetch_historical_data_chunked(self, symbol: str, timeframe: str, total_limit: int, cache_key: str, current_time: float, original_limit: int = None) -> List[Dict[str, Any]]:
         """Fetch large amounts of historical data by splitting into chunks - PREVENT POOL EXHAUSTION"""
@@ -1100,30 +1104,18 @@ class RealMarketDataFetcher:
                     unified_logging.warning(f"Failed to fetch from {exchange}: {e}")
                     continue
 
-            # NO FALLBACK: If all exchanges fail, return 0.0 values
-            # User requirement: Only real exchange data, no free API fallbacks
-            unified_logging.error(f"❌ CRITICAL: All exchanges failed for {symbol}. Returning 0 values.")
-            return {
-                'price': 0.0,
-                'change_24h': 0.0,
-                'volume': 0.0,
-                'high_24h': 0.0,
-                'low_24h': 0.0,
-                'timestamp': datetime.now(timezone.utc),
-                'exchange': None
-            }
-            
+            # RAISE EXCEPTION: If all exchanges fail, raise error for immediate debugging
+            # User requirement: Don't return 0, raise exception to fix directly
+            error_msg = f"❌ CRITICAL: All {len(self.exchanges)} exchanges failed for {symbol}. Check exchange connectivity or symbol validity!"
+            unified_logging.error(error_msg)
+            raise RuntimeError(error_msg)
+
+        except RuntimeError:
+            # Re-raise RuntimeError (already logged)
+            raise
         except Exception as e:
             unified_logging.error(f"Failed to get market data for {symbol}: {e}")
-            return {
-                'price': 0.0,
-                'change_24h': 0.0,
-                'volume': 0.0,
-                'high_24h': 0.0,
-                'low_24h': 0.0,
-                'timestamp': datetime.now(timezone.utc),
-                'exchange': None
-            }
+            raise RuntimeError(f"Failed to fetch market data for {symbol}: {e}")
 
 
     def get_all_available_symbols(self, quote_currency: str = 'USDT') -> List[str]:

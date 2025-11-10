@@ -3254,14 +3254,33 @@ class GodMode10000Application:
                     )
                     
                     if quick_data and len(quick_data) > 0:
-                        import pandas as pd
-                        df = pd.DataFrame(quick_data)
-                        if 'timestamp' in df.columns:
-                            df.set_index('timestamp', inplace=True)
-                        
-                        # Simple line chart
-                        if 'close' in df.columns:
-                            st.line_chart(df['close'], use_container_width=True)
+                        # TRADINGVIEW CHART - User requirement: Replace with TradingView for better monitoring
+                        # Convert symbol format: BTC/USDT -> BTCUSDT for TradingView
+                        tv_symbol = chart_symbol.replace('/', '')
+
+                        # TradingView Widget (Free, no API key needed)
+                        tradingview_html = f"""
+                        <!-- TradingView Widget BEGIN -->
+                        <div class="tradingview-widget-container" style="height:400px;">
+                          <div class="tradingview-widget-container__widget"></div>
+                          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                          {{
+                          "autosize": true,
+                          "symbol": "BINANCE:{tv_symbol}",
+                          "interval": "{global_timeframe}",
+                          "timezone": "Etc/UTC",
+                          "theme": "dark",
+                          "style": "1",
+                          "locale": "en",
+                          "enable_publishing": false,
+                          "allow_symbol_change": true,
+                          "support_host": "https://www.tradingview.com"
+                          }}
+                          </script>
+                        </div>
+                        <!-- TradingView Widget END -->
+                        """
+                        st.components.v1.html(tradingview_html, height=420)
                     else:
                         st.info(f"No chart data available for {chart_symbol}")
                 
@@ -12740,7 +12759,13 @@ def main():
         
         # Clear debug messages on success
         debug_container.empty()
-        
+
+        # AUTO-REFRESH every 10 seconds for real-time data
+        # User requirement: Update data every 10s for online real-time operation
+        import time
+        time.sleep(10)
+        st.rerun()
+
     except Exception as e:
         # Show error in debug container with full details
         with debug_container.container():
