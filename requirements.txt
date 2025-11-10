@@ -19,7 +19,6 @@ plotly>=5.15.0
 ccxt>=4.0.0
 aiohttp>=3.8.0
 requests>=2.31.0
-yfinance>=0.2.47
 
 # Machine Learning (Essential only)
 xgboost>=1.7.0
